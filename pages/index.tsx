@@ -1,10 +1,29 @@
-const Index = () => {
-	const Clicker = async () => {
-		let value = await (await fetch('http://localhost:8000/')).text();
-		console.log(value);
-	};
+import styled from 'styled-components';
+import ArticleList from '../component/ArticleList';
+import UserProfileBox from '../component/UserProfileBox';
+import MainLayout from '../Layout/MainLayout';
+import { Palette } from '../lib/styles/Theme';
 
-	return <div onClick={Clicker}>Hi</div>;
+const Content = styled.div`
+	display: flex;
+`;
+
+const Title = styled.div`
+	height: 50px;
+	font-size: 24px;
+	margin-top: 30px;
+`;
+
+const Index = () => {
+	return (
+		<MainLayout>
+			<Title>메인페이지</Title>
+			<Content>
+				<ArticleList />
+				<UserProfileBox />
+			</Content>
+		</MainLayout>
+	);
 };
 
 export default Index;
