@@ -1,10 +1,12 @@
 import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
-import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import axios, { AxiosError } from 'axios';
 import { API } from '../lib/utils/api';
+import { Router, useRouter } from 'next/dist/client/router';
+import { useDebounce } from '../lib/hooks/useDebounce';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -56,15 +58,36 @@ const Signup = () => {
 		password: '',
 		username: '',
 	});
-	const mutation = useMutation((content: any) => API.post('/signup', content), {
-		onError: (error: AxiosError) => {
-			alert(error.response.data);
-		},
-	});
+
+	const router = useRouter();
+	const loginResultMutation = useMutation(
+		(content: any) => API.post('/signup', content),
+		{
+			onSuccess: () => {
+				router.push('/login');
+			},
+			onError: (error: AxiosError) => {
+				alert(error.response.data);
+			},
+		}
+	);
 	const onSubmit = () => {
-		mutation.mutate(inputs);
+		loginResultMutation.mutate(inputs);
 	};
 	const { id, password, username } = inputs;
+	const debouncedId = useDebounce(id, 200);
+	const idCheckFn = async (id) => {
+		let data = await API.get(`/signup/${id}`);
+		console.log(data);
+	};
+	const { data, isLoading } = useQuery(
+		['idCheck', debouncedId],
+		() => API.get(`/signup/checkId/${debouncedId}`),
+		{ enabled: debouncedId.length > 2 }
+	);
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value, name } = e.target;
 		setInputs({
