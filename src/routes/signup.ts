@@ -21,14 +21,28 @@ router.post(
 
 		console.log(formattedDate);
 		console.log(req.body);
-		/*try {
+		try {
 			await database.query(
 				`INSERT INTO users values ('${id}', '${password}', '${username}', '${formattedDate}');`
 			);
-		} catch (e) {*/
-		res.status(400).send('실패데수네~');
-		//}
+		} catch (e) {
+			res.status(400).send('실패데수네~');
+		}
 	})
 );
-
+router.get(
+	'/checkId/:id',
+	asyncWrap(async (req: Request<InputProps>, res: Response) => {
+		const id = req.params.id;
+		console.log({ id });
+		try {
+			const [rows] = await database.query(
+				`SELECT count(id) as cnt FROM users WHERE id='${id}';`
+			);
+			res.send(rows);
+		} catch (e) {
+			res.status(400).send('실패데수네~');
+		}
+	})
+);
 export default router;
