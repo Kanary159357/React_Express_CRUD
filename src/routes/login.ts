@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Router } from 'express';
 import database from '../config/database';
 import * as jwt from 'jsonwebtoken';
 import { asyncWrap } from '../utils/asyncWrapper';
@@ -10,16 +10,17 @@ interface UserQueryProps extends RowDataPacket {
 }
 
 const router = Router();
-router.get('/', (req, res) => {});
 
 router.post(
 	'/',
-	asyncWrap(async (req, res) => {
+	asyncWrap(async (req: Request<UserQueryProps>, res) => {
+		console.log(req.body);
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
 		>(
-			`SELECT id FROM Users WHERE id='${req.body.username}' and password = '${req.body.password}'`
+			`SELECT id FROM Users WHERE id='${req.body.id}' and password = '${req.body.password}'`
 		);
+		console.log(rows);
 		if (!rows.length) {
 			res.json({ success: false });
 		} else {
