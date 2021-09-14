@@ -10,9 +10,11 @@ import {
 } from 'slate';
 import { withHistory } from 'slate-history';
 
-import { Button, Icon, Toolbar } from './base/EditorBase';
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
+import { Button } from 'antd';
+import { TitleAndDescription } from '../pages/write';
+import { RestFilled } from '@ant-design/icons';
 
 const Wrapper = styled.div`
 	margin: 30px;
@@ -48,33 +50,52 @@ interface RichEditorProps {
 	readOnly?: boolean;
 	title?: string;
 	text?: Descendant[];
+	post: TitleAndDescription;
+	setPost: (text: TitleAndDescription) => void;
 }
 
-const RichEditor = ({ readOnly = false, text, title }: RichEditorProps) => {
-	const [value, setValue] = useState<Descendant[]>(text || initialValue);
+const RichEditor = ({
+	readOnly = false,
+	text,
+	post,
+	setPost,
+}: RichEditorProps) => {
 	const [editor] = useState(() => withHistory(withReact(createEditor())));
+
+	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = e.target;
+		setPost({ ...post, title: value });
+	};
+
 	return (
-		<Wrapper>
-			<>
-				{true ? (
-					<Title>{title}</Title>
-				) : (
-					<TitleInput placeholder='제목을 입력해주세요..' />
-				)}
-			</>
-			<EditorDiv>
-				<Slate
-					editor={editor}
-					value={value}
-					onChange={(value) => setValue(value)}>
-					<Editable
-						readOnly={readOnly}
-						style={{ minHeight: '400px' }}
-						placeholder='어떤 글을 작성하실건가요?'
-					/>
-				</Slate>
-			</EditorDiv>
-		</Wrapper>
+		<>
+			<Wrapper>
+				<>
+					{readOnly ? (
+						<Title>{post.title}</Title>
+					) : (
+						<TitleInput
+							value={post.title}
+							name={'title'}
+							onChange={onChange}
+							placeholder='제목을 입력해주세요..'
+						/>
+					)}
+				</>
+				<EditorDiv>
+					<Slate
+						editor={editor}
+						value={post.description}
+						onChange={(text) => setPost({ ...post, description: text })}>
+						<Editable
+							readOnly={readOnly}
+							style={{ minHeight: '400px' }}
+							placeholder='어떤 글을 작성하실건가요?'
+						/>
+					</Slate>
+				</EditorDiv>
+			</Wrapper>
+		</>
 	);
 };
 

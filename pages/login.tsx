@@ -8,6 +8,7 @@ import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
 import { API } from '../lib/utils/api';
 import { useDispatch } from 'react-redux';
+import { loginProcess } from '../lib/store/authSlice';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -49,6 +50,8 @@ const StyledButton = styled(Button)`
 interface UserAuthProps {
 	success: boolean;
 	token?: string;
+	id: string;
+	username: string;
 }
 const StyledControl = styled.div``;
 const login = async (values: { id: string; password: string }) => {
@@ -68,18 +71,18 @@ const Login = () => {
 	const dispatch = useDispatch();
 	const inputRef = useRef({});
 	const onFinish = async () => {
-		const id = inputRef.current['id'].state.value;
-		const password = inputRef.current['password'].state.value;
-		const result = await login({ id, password });
-
-		if (result.success) {
-			API.defaults.headers.common['Authorization'] = result.token;
-			process.browser && localStorage.setItem('isLogin', 'true');
-			process.browser && localStorage.setItem('token', result.token);
-
-			dispatch(login);
-			console.log(result);
-			//router.push('/');
+		const inputIdValue = inputRef.current['id'].state.value;
+		const inputPasswordValue = inputRef.current['password'].state.value;
+		const result = await login({
+			id: inputIdValue,
+			password: inputPasswordValue,
+		});
+		const { username, success, token } = result;
+		if (success) {
+			API.defaults.headers.common['Authorization'] = token;
+			process.browser && localStorage.setItem('token', token);
+			dispatch(loginProcess({ id: inputIdValue, username }));
+			router.push('/');
 		} else {
 			alert('그런 계정은 없답니다~');
 		}

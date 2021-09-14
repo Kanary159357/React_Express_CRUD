@@ -3,6 +3,10 @@ import { Palette } from '../lib/styles/Theme';
 import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../lib/store';
+import { logoutProcess } from '../lib/store/authSlice';
+import { useEffect } from 'react';
 const Wrapper = styled.div`
 	width: 220px;
 	height: 250px;
@@ -43,6 +47,11 @@ const ControlItem = styled.div`
 `;
 
 const UserProfileBox = () => {
+	const { isLogin, userData } = useSelector((state: RootState) => state.auth);
+	useEffect(() => {
+		console.log(isLogin);
+	}, [isLogin]);
+	const dispatch = useDispatch();
 	return (
 		<Wrapper>
 			<UserImageBox>
@@ -50,24 +59,33 @@ const UserProfileBox = () => {
 					<Avatar size={150} icon={<UserOutlined />} />
 				</div>
 			</UserImageBox>
-			<ControlBox>
-				<ControlItem>
-					<Link href='/mypage'>
-						<a>
-							<div className='icon'>
-								<HomeOutlined />
-							</div>
-							<div className='sub'>마이페이지</div>
-						</a>
-					</Link>
-				</ControlItem>
-				<ControlItem>
-					<div className='icon'>
-						<LogoutOutlined />
-					</div>
-					<div className='sub'>로그아웃</div>
-				</ControlItem>
-			</ControlBox>
+			{isLogin ? (
+				<ControlBox>
+					<ControlItem>
+						<Link href='/mypage'>
+							<a>
+								<div className='icon'>
+									<HomeOutlined />
+								</div>
+								<div className='sub'>마이페이지</div>
+							</a>
+						</Link>
+					</ControlItem>
+					<ControlItem
+						onClick={() => {
+							dispatch(logoutProcess());
+						}}>
+						<div className='icon'>
+							<LogoutOutlined />
+						</div>
+						<div className='sub'>로그아웃</div>
+					</ControlItem>
+				</ControlBox>
+			) : (
+				<Link href='/login'>
+					<a>로그인</a>
+				</Link>
+			)}
 		</Wrapper>
 	);
 };

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
+import { PostProps } from './ArticleList';
 const Wrapper = styled.div`
 	padding: 15px;
 `;
@@ -49,10 +50,12 @@ const SubDescription = styled.div`
 	margin-top: 6px;
 `;
 
-const ArticleItem = () => {
+const ArticleItem = ({ post }: { post: PostProps }) => {
+	const { id, user_id, created_at, post_preview } = post;
+	console.log(post_preview);
 	return (
 		<Wrapper>
-			<Link href='/article/1'>
+			<Link href={`/article/${id}`}>
 				<a>
 					<ContentBox>
 						<ImageBox />

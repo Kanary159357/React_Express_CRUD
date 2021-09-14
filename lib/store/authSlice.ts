@@ -2,29 +2,37 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface AuthState {
 	isLogin: boolean;
-	userData: {
-		username: string;
-		id: number;
-	};
+	userData: UserDataProps;
+}
+export interface UserDataProps {
+	username: string;
+	id: string;
 }
 
 const initialState: AuthState = {
-	isLogin: JSON.parse(localStorage.getItem('user')),
-	userData: null,
+	isLogin:
+		(process.browser && JSON.parse(localStorage.getItem('isLogin'))) || false,
+	userData: process.browser && JSON.parse(localStorage.getItem('userData')),
 };
 
 export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		login: (state, action: PayloadAction<{ username: string; id: number }>) => {
+		loginProcess: (state, action: PayloadAction<UserDataProps>) => {
 			state.isLogin = true;
 			state.userData = action.payload;
+			process.browser &&
+				localStorage.setItem('userData', JSON.stringify(action.payload));
+			process.browser && localStorage.setItem('isLogin', 'true');
 		},
-		logout: (state, action) => {
+		logoutProcess: (state) => {
 			state.isLogin = false;
 			state.userData = null;
+			process.browser && localStorage.setItem('isLogin', 'false');
+			process.browser && localStorage.removeItem('userData');
 		},
 	},
 });
-export const { login, logout } = authSlice.actions;
+export const { loginProcess, logoutProcess } = authSlice.actions;
+export default authSlice.reducer;

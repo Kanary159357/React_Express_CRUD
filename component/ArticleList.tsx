@@ -9,15 +9,23 @@ const Wrapper = styled.div`
 	padding: 20px;
 `;
 
-const ArticleList = () => {
+interface PostsProps {
+	posts: PostProps[];
+}
+
+export interface PostProps {
+	id: number;
+	user_id: string;
+	post_preview: string;
+	created_at: string;
+}
+
+const ArticleList = ({ posts }: PostsProps) => {
 	return (
 		<Wrapper>
-			<ArticleItem />
-			<ArticleItem />
-			<ArticleItem />
-			<ArticleItem />
-			<ArticleItem />
-			<ArticleItem />
+			{posts.map((item) => {
+				return <ArticleItem key={item.id} post={item} />;
+			})}
 		</Wrapper>
 	);
 };
