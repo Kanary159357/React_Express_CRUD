@@ -7,6 +7,7 @@ import { FieldPacket, RowDataPacket } from 'mysql2';
 interface UserQueryProps extends RowDataPacket {
 	id: string;
 	password: string;
+	username: string;
 }
 
 const router = Router();
@@ -18,14 +19,18 @@ router.post(
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
 		>(
-			`SELECT id FROM Users WHERE id='${req.body.id}' and password = '${req.body.password}'`
+			`SELECT id, username FROM Users WHERE id='${req.body.id}' and password = '${req.body.password}'`
 		);
 		console.log(rows);
 		if (!rows.length) {
 			res.json({ success: false });
 		} else {
 			let token = jwt.sign(rows[0].id, process.env.TOKEN_SECRET);
-			res.json({ success: true, token });
+			res.json({
+				success: true,
+				token,
+				username: rows[0].username,
+			});
 		}
 	})
 );
