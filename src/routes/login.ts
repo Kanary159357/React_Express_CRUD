@@ -1,4 +1,4 @@
-import { Request, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import database from '../config/database';
 import * as jwt from 'jsonwebtoken';
 import { asyncWrap } from '../utils/asyncWrapper';
@@ -14,7 +14,7 @@ const router = Router();
 
 router.post(
 	'/',
-	asyncWrap(async (req: Request<UserQueryProps>, res) => {
+	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
 		console.log(req.body);
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
@@ -25,7 +25,7 @@ router.post(
 		if (!rows.length) {
 			res.json({ success: false });
 		} else {
-			let token = jwt.sign(rows[0].id, process.env.TOKEN_SECRET);
+			let token = jwt.sign(rows[0].id, process.env.TOKEN_SECRET as string);
 			res.json({
 				success: true,
 				token,
