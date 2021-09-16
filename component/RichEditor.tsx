@@ -50,13 +50,14 @@ interface RichEditorProps {
 	readOnly?: boolean;
 	title?: string;
 	text?: Descendant[];
-	post: TitleAndDescription;
-	setPost: (text: TitleAndDescription) => void;
+	post?: TitleAndDescription;
+	setPost?: (text: TitleAndDescription) => void;
 }
 
 const RichEditor = ({
 	readOnly = false,
 	text,
+	title,
 	post,
 	setPost,
 }: RichEditorProps) => {
@@ -66,13 +67,18 @@ const RichEditor = ({
 		const { value } = e.target;
 		setPost({ ...post, title: value });
 	};
-
+	const EditorChange = (text: Descendant[]) => {
+		if (readOnly) {
+		} else {
+			setPost && setPost({ ...post, content: text });
+		}
+	};
 	return (
 		<>
 			<Wrapper>
 				<>
 					{readOnly ? (
-						<Title>{post.title}</Title>
+						<Title>{title}</Title>
 					) : (
 						<TitleInput
 							value={post.title}
@@ -85,10 +91,13 @@ const RichEditor = ({
 				<EditorDiv>
 					<Slate
 						editor={editor}
-						value={post.description}
-						onChange={(text) => setPost({ ...post, description: text })}>
+						value={text || post.content}
+						onChange={EditorChange}>
 						<Editable
 							readOnly={readOnly}
+							spellCheck={false}
+							autoCorrect={'false'}
+							autoCapitalize={'false'}
 							style={{ minHeight: '400px' }}
 							placeholder='어떤 글을 작성하실건가요?'
 						/>

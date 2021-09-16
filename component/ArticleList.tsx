@@ -16,8 +16,9 @@ interface PostsProps {
 export interface PostProps {
 	id: number;
 	user_id: string;
-	post_preview: string;
+	preview_text: string;
 	created_at: string;
+	title: string;
 }
 
 const ArticleList = ({ posts }: PostsProps) => {

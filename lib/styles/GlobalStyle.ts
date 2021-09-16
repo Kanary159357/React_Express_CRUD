@@ -25,6 +25,7 @@ const GlobalStyle = createGlobalStyle`
     a{
         &,&:focus, &:active, &:visited{
             color: #333;
+            text-decoration:none;
         }
     }
 `;

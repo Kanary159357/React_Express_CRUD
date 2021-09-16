@@ -6,7 +6,7 @@ import useUser from '../lib/hooks/useUsers';
 import { useState, useRef } from 'react';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import { API } from '../lib/utils/api';
+import API from '../lib/utils/api';
 import { useDispatch } from 'react-redux';
 import { loginProcess } from '../lib/store/authSlice';
 const Wrapper = styled.div`
@@ -81,6 +81,7 @@ const Login = () => {
 		if (success) {
 			API.defaults.headers.common['Authorization'] = token;
 			process.browser && localStorage.setItem('token', token);
+			console.log(token);
 			dispatch(loginProcess({ id: inputIdValue, username }));
 			router.push('/');
 		} else {

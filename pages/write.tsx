@@ -5,9 +5,11 @@ import dynamic from 'next/dynamic';
 import MainLayout from '../Layout/MainLayout';
 import { Button } from 'antd';
 import { Descendant, Node } from 'slate';
-import { API } from '../lib/utils/api';
+import API from '../lib/utils/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '../lib/store';
+import { useMutation } from 'react-query';
+import { Router, useRouter } from 'next/dist/client/router';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
@@ -30,34 +32,49 @@ const initialValue: Descendant[] = [
 
 export interface TitleAndDescription {
 	title: string;
-	description: Descendant[];
+	content: Descendant[];
 }
 const Write = () => {
 	const id = useSelector((state: RootState) => state.auth.userData.id);
-	const serialize = (value): string => {
-		return value.map((n) => Node.string(n)).join(' ');
-	};
-
+	const router = useRouter();
 	const [post, setPost] = useState<TitleAndDescription>({
 		title: '',
-		description: initialValue,
+		content: initialValue,
 	});
-	const WritePost = () => {
-		API.post('/write', {
+	const WritePost = (id: string, post: TitleAndDescription) => {
+		const serialize = (value): string => {
+			return value.map((n) => Node.string(n)).join(' ');
+		};
+		return API.post('/write', {
 			id,
-			preview: serialize(post.description).substring(0, 200),
+			preview: serialize(post.content).substring(0, 200),
 			title: post.title,
-			post: {
-				...post,
-				description: JSON.stringify(post.description),
-			},
+			content: JSON.stringify(post.content),
 		});
 	};
+	const mutation = useMutation(
+		({ id, post }: { id: string; post: TitleAndDescription }) =>
+			WritePost(id, post),
+		{
+			onSuccess: (response) => {
+				router.push(`/`);
+			},
+			onError: (e) => {
+				alert('에러가 발생했습니다');
+				router.push(`/`);
+			},
+		}
+	);
 	return (
 		<MainLayout>
 			<Editor post={post} setPost={setPost} />
 			<ControlDiv>
-				<Button onClick={WritePost}>작성</Button>
+				<Button
+					onClick={() => {
+						mutation.mutate({ id, post });
+					}}>
+					작성
+				</Button>
 			</ControlDiv>
 		</MainLayout>
 	);

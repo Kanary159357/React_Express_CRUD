@@ -4,11 +4,12 @@ import ArticleList from '../component/ArticleList';
 import MainLayout from '../Layout/MainLayout';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { API } from '../lib/utils/api';
 import { useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { QueryClient, useQuery } from 'react-query';
 import dynamic from 'next/dynamic';
+import { dehydrate } from 'react-query/hydration';
 
 const UserProfileBox = dynamic(() => import('../component/UserProfileBox'));
 const Content = styled.div`
@@ -22,20 +23,27 @@ const Title = styled.div`
 `;
 
 const SideDiv = styled.div``;
+const getPosts = async () => {
+	try {
+		let { data }: AxiosResponse<any> = await API.get(`/`);
+		return data;
+	} catch (err) {
+		console.error(err);
+	}
+};
+export async function getServerSideProps() {
+	const queryClient = new QueryClient();
 
-const Index = () => {
-	const getPosts = async () => {
-		try {
-			let { data }: AxiosResponse<any> = await API.get(`/`);
-			return data;
-		} catch (err) {
-			console.error(err);
-		}
+	await queryClient.prefetchQuery('postsList', getPosts);
+
+	return {
+		props: {
+			dehydratedState: dehydrate(queryClient),
+		},
 	};
+}
+const Index = () => {
 	const { data, isLoading } = useQuery('postsList', getPosts);
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
 
 	return (
 		<MainLayout>

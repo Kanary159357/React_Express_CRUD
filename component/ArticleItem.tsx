@@ -11,6 +11,7 @@ const ContentBox = styled.div`
 	border: 1px solid ${Palette.gray_1};
 	background: ${Palette.white};
 	padding: 20px;
+	box-sizing: border-box;
 	display: flex;
 `;
 
@@ -51,8 +52,7 @@ const SubDescription = styled.div`
 `;
 
 const ArticleItem = ({ post }: { post: PostProps }) => {
-	const { id, user_id, created_at, post_preview } = post;
-	console.log(post_preview);
+	const { id, user_id, created_at, preview_text, title } = post;
 	return (
 		<Wrapper>
 			<Link href={`/article/${id}`}>
@@ -60,15 +60,15 @@ const ArticleItem = ({ post }: { post: PostProps }) => {
 					<ContentBox>
 						<ImageBox />
 						<Content>
-							<Title>제목입니다</Title>
+							<Title>{title}</Title>
 							<Description>
 								<div>
-									<span>
-										내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다엄마
-									</span>
+									<span>{preview_text}</span>
 								</div>
 							</Description>
-							<SubDescription>2021-10-21 카라누라나이</SubDescription>
+							<SubDescription>
+								{created_at} {user_id}
+							</SubDescription>
 						</Content>
 					</ContentBox>
 				</a>
