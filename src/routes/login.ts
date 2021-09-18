@@ -3,7 +3,8 @@ import database from '../config/database';
 import * as jwt from 'jsonwebtoken';
 import { asyncWrap } from '../utils/asyncWrapper';
 import { FieldPacket, RowDataPacket } from 'mysql2';
-
+import redisClient from '../config/redis';
+import { getNewAccessToken } from '../utils/jwt-utils';
 interface UserQueryProps extends RowDataPacket {
 	id: string;
 	password: string;
@@ -25,10 +26,16 @@ router.post(
 		if (!rows.length) {
 			res.json({ success: false });
 		} else {
-			let token = jwt.sign(rows[0].id, process.env.TOKEN_SECRET as string);
+			let accesstoken = getNewAccessToken(rows[0].id);
+			let refreshToken = jwt.sign({}, process.env.TOKEN_SECRET, {
+				algorithm: 'HS256',
+				expiresIn: '14d',
+			});
+			redisClient.set(rows[0].id, refreshToken);
 			res.json({
 				success: true,
-				token,
+				token: accesstoken,
+				refreshToken,
 				username: rows[0].username,
 			});
 		}

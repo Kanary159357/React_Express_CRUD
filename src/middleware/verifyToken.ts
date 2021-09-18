@@ -10,7 +10,7 @@ const verifyToken = (req: Request, res: Response, next: Function) => {
 	try {
 		const token = authHeader.split(' ')[1];
 		const decoded = verify(token, process.env.TOKEN_SECRET as string);
-		req.user = 'hi';
+		req.user = decoded as string;
 	} catch (err) {
 		return res.status(401).send('Invalid Token');
 	}
