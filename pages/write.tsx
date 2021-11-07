@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../lib/store';
 import { useMutation } from 'react-query';
 import { Router, useRouter } from 'next/dist/client/router';
+import { AxiosError } from 'axios';
+import { writePost } from '../lib/services/PostService';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
@@ -35,33 +37,21 @@ export interface TitleAndDescription {
 	content: Descendant[];
 }
 const Write = () => {
-	const id = useSelector((state: RootState) => state.auth.userData.id);
 	const router = useRouter();
 	const [post, setPost] = useState<TitleAndDescription>({
 		title: '',
 		content: initialValue,
 	});
-	const WritePost = (id: string, post: TitleAndDescription) => {
-		const serialize = (value): string => {
-			return value.map((n) => Node.string(n)).join(' ');
-		};
-		return API.post('/write', {
-			id,
-			preview: serialize(post.content).substring(0, 200),
-			title: post.title,
-			content: JSON.stringify(post.content),
-		});
-	};
+
 	const mutation = useMutation(
-		({ id, post }: { id: string; post: TitleAndDescription }) =>
-			WritePost(id, post),
+		({ post }: { post: TitleAndDescription }) => writePost(post),
 		{
 			onSuccess: (response) => {
 				router.push(`/`);
 			},
-			onError: (e) => {
+			onError: (e: AxiosError) => {
 				alert('에러가 발생했습니다');
-				router.push(`/`);
+				console.log(e.message);
 			},
 		}
 	);
@@ -71,7 +61,7 @@ const Write = () => {
 			<ControlDiv>
 				<Button
 					onClick={() => {
-						mutation.mutate({ id, post });
+						mutation.mutate({ post });
 					}}>
 					작성
 				</Button>

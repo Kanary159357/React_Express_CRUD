@@ -9,59 +9,61 @@ import { AxiosResponse } from 'axios';
 import API from '../../../lib/utils/api';
 import { useEffect } from 'react';
 
-import {
-	GetServerSideProps,
-	GetServerSidePropsContext,
-	GetStaticPropsResult,
-} from 'next';
 import dynamic from 'next/dynamic';
 import { Content } from 'antd/lib/layout/layout';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../lib/store';
+import { RootState, wrapper } from '../../../lib/store';
+import { Store } from 'redux';
+import { GetServerSidePropsContext } from 'next';
+import { authSSR } from '../../../lib/utils/authSSR';
+import { getPost } from '../../../lib/services/PostService';
 const ControlDiv = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	margin: 30px;
 	margin-top: -30px;
 `;
-export async function getServerSideProps({
-	params,
-}: {
-	params: { id: string };
-}) {
-	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery('post', () => getPost(params.id));
 
-	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
-	};
-}
+export const getServerSideProps = wrapper.getServerSideProps(
+	(store) => async (context: GetServerSidePropsContext) => {
+		const authResult = await authSSR(context, store);
+		const { params } = context;
+		const queryClient = new QueryClient();
+		try {
+			await queryClient.prefetchQuery('post', () =>
+				getPost(params!.id as string)
+			);
+			const result = queryClient.getQueryData<any>('post');
+			if (!result.length) {
+				return {
+					redirect: {
+						permanent: false,
+						destination: '/404',
+					},
+				};
+			}
+		} catch (e) {}
+		console.log('hi');
+		return {
+			props: {
+				dehydratedState: dehydrate(queryClient),
+			},
+		};
+	}
+);
+
 const Editor = dynamic(() => import('../../../component/RichEditor'), {
 	ssr: false,
 });
-const getPost = async (id: string) => {
-	try {
-		let { data }: AxiosResponse<any> = await API.get(`/article/${id}`);
-		return data;
-	} catch (err) {
-		console.error(err);
-	}
-};
-const deletePost = async (id: string) => {
-	try {
-		await API.delete(`/article/${id}`);
-	} catch (err) {
-		console.error(err);
-	}
-};
 
 const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const { data, isLoading } = useQuery('post', () => getPost(id as string));
-	const user_id = useSelector((state: RootState) => state.auth.userData.id);
+	const userData = useSelector(
+		(state: RootState) => state.authReducer.userData
+	);
+	const user_id = userData ? userData.id : null;
 	const post: { title: string; content: Descendant[] } = {
 		title: data[0].title,
 		content: data[0].content,
@@ -75,9 +77,6 @@ const Article = () => {
 		}
 	);
 
-	useEffect(() => {
-		console.log(user_id, data[0].user_id);
-	}, [data, user_id]);
 	return (
 		<MainLayout>
 			<Editor readOnly post={post} title={data[0].title} />

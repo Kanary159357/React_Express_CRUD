@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 export interface AuthState {
 	isLogin: boolean;
-	userData: UserDataProps;
+	userData: UserDataProps | null;
+	accessToken: string | null;
 }
 export interface UserDataProps {
 	username: string;
@@ -10,29 +12,41 @@ export interface UserDataProps {
 }
 
 const initialState: AuthState = {
-	isLogin:
-		(process.browser && JSON.parse(localStorage.getItem('isLogin'))) || false,
-	userData: process.browser && JSON.parse(localStorage.getItem('userData')),
+	isLogin: false,
+	userData: null,
+	accessToken: null,
 };
 
 export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		loginProcess: (state, action: PayloadAction<UserDataProps>) => {
-			state.isLogin = true;
-			state.userData = action.payload;
-			process.browser &&
-				localStorage.setItem('userData', JSON.stringify(action.payload));
-			process.browser && localStorage.setItem('isLogin', 'true');
+		loginProcess: (state, action: PayloadAction<AuthState>) => {
+			state.isLogin = action.payload.isLogin;
+			state.userData = action.payload.userData;
+			state.accessToken = action.payload.accessToken;
 		},
 		logoutProcess: (state) => {
 			state.isLogin = false;
 			state.userData = null;
-			process.browser && localStorage.setItem('isLogin', 'false');
-			process.browser && localStorage.removeItem('userData');
+			state.accessToken = null;
+		},
+		updateAccessToken: (state, action: PayloadAction<{ token: string }>) => {
+			state.accessToken = action.payload.token;
+		},
+		emptyAction: (state, action) => {
+			state.accessToken = action.payload;
+		},
+		resetUser: (state) => {
+			state = initialState;
 		},
 	},
 });
-export const { loginProcess, logoutProcess } = authSlice.actions;
+export const {
+	loginProcess,
+	logoutProcess,
+	updateAccessToken,
+	resetUser,
+	emptyAction,
+} = authSlice.actions;
 export default authSlice.reducer;

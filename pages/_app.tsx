@@ -3,26 +3,28 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import GlobalStyle from '../lib/styles/GlobalStyle';
 import { Provider } from 'react-redux';
 import AppLayout from '../Layout/AppLayout';
-import { store } from '../lib/store';
+import { store, wrapper } from '../lib/store';
 import { Hydrate } from 'react-query/hydration';
 import { useState } from 'react';
+import { AppProps } from 'next/dist/shared/lib/router/router';
+import { injectStoreToInterceptor } from '../lib/utils/serverLessAPI';
 
-const MyApp = ({ Component, pageProps }) => {
+injectStoreToInterceptor(store);
+
+const MyApp = ({ Component, pageProps }: AppProps) => {
 	const [queryClient] = useState(() => new QueryClient());
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Hydrate state={pageProps.dehydratedState}>
-				<Provider store={store}>
-					{' '}
-					<GlobalStyle />
-					<AppLayout>
-						<Component {...pageProps} />
-					</AppLayout>
-				</Provider>
+				{' '}
+				<GlobalStyle />
+				<AppLayout>
+					<Component {...pageProps} />
+				</AppLayout>
 			</Hydrate>
 		</QueryClientProvider>
 	);
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../lib/store';
 import { logoutProcess } from '../lib/store/authSlice';
 import { useEffect } from 'react';
+import { useMutation } from 'react-query';
+import { logout } from '../lib/services/UserService';
 const Wrapper = styled.div`
 	width: 220px;
 	height: 250px;
@@ -47,17 +49,22 @@ const ControlItem = styled.div`
 `;
 
 const UserProfileBox = () => {
-	const { isLogin, userData } = useSelector((state: RootState) => state.auth);
+	const { isLogin, userData } = useSelector(
+		(state: RootState) => state.authReducer
+	);
 	useEffect(() => {
 		console.log(isLogin);
 	}, [isLogin]);
 	const dispatch = useDispatch();
+	const logoutAction = useMutation(logout, {
+		onSuccess: () => {
+			dispatch(logoutProcess());
+		},
+	});
 	return (
 		<Wrapper>
 			<UserImageBox>
-				<div>
-					<Avatar size={150} icon={<UserOutlined />} />
-				</div>
+				<div>{userData?.username}</div>
 			</UserImageBox>
 			{isLogin ? (
 				<ControlBox>
@@ -71,10 +78,7 @@ const UserProfileBox = () => {
 							</a>
 						</Link>
 					</ControlItem>
-					<ControlItem
-						onClick={() => {
-							dispatch(logoutProcess());
-						}}>
+					<ControlItem onClick={() => logoutAction.mutate()}>
 						<div className='icon'>
 							<LogoutOutlined />
 						</div>

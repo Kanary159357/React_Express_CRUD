@@ -3,30 +3,106 @@ import { Palette } from '../lib/styles/Theme';
 import ArticleItem from './ArticleItem';
 import { Input } from 'antd';
 import MainLayout from '../Layout/MainLayout';
+import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
+import { useRef } from 'react';
+import { getPosts } from '../lib/services/PostService';
+import { useInfiniteQuery } from 'react-query';
+import { useEffect } from 'react';
+import SkeletonBox from './Skeleton/SkeletonBox';
 
 const Wrapper = styled.div`
-	width: 700px;
-	padding: 20px;
+	width: 626px;
+	border: 1px solid gray;
+	border-radius: 25px;
 `;
 
-interface PostsProps {
-	posts: PostProps[];
-}
+const ListControlBox = styled.div`
+	display: flex;
+	padding: 0 30px;
+	height: 73px;
+	background: gray;
+	border-radius: 25px 25px 0px 0px;
+`;
 
-export interface PostProps {
-	id: number;
-	user_id: string;
-	preview_text: string;
-	created_at: string;
-	title: string;
-}
+const CustomSelect = styled.select`
+	&:active,
+	&:focus {
+		outline: none;
+		background: gray;
+	}
+	option {
+		&:hover,
+		&::focus {
+			background: black;
+		}
+	}
+	margin-left: auto;
+	outline: none;
 
-const ArticleList = ({ posts }: PostsProps) => {
+	font-family: inherit;
+	font-size: inherit;
+	cursor: inherit;
+	line-height: inherit;
+	background-color: transparent;
+	border: none;
+	padding: 0 1em 0 0;
+`;
+
+const ContentBox = styled.div`
+	background: ${Palette.white};
+	padding: 0 30px 60px 30px;
+	border: 1px solid gray;
+	border-radius: 0 0 25px 25px;
+`;
+
+const SkeletonItem = styled.div`
+	height: 215px;
+	padding: 30px 0px;
+
+	div {
+		margin-bottom: 20px;
+	}
+	border-bottom: 1px solid ${Palette.gray_4};
+	margin-bottom: -1px;
+`;
+
+const ArticleList = () => {
+	const scrollRef = useRef(null);
+	const { data, isLoading, hasNextPage, fetchNextPage } =
+		useInfiniteQuery<GetPosts>('postsList', getPosts, {
+			getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+		});
+
+	useIntersectionObserver(scrollRef, () => hasNextPage && fetchNextPage());
 	return (
 		<Wrapper>
-			{posts.map((item) => {
-				return <ArticleItem key={item.id} post={item} />;
-			})}
+			<ListControlBox>
+				<CustomSelect>
+					<option value='최신순 정렬'>최신순 정렬</option>
+					<option value='lime'>Lime</option>
+					<option value='coconut'>Coconut</option>
+					<option value='mango'>Mango</option>
+				</CustomSelect>
+			</ListControlBox>
+			<ContentBox>
+				{true
+					? new Array(5).fill(1).map((_, i) => (
+							<SkeletonItem key={i}>
+								<SkeletonBox height={'30px'} width={'500px'} />
+								<SkeletonBox height={'20px'} width={'400px'} />
+								<SkeletonBox height={'20px'} width={'300px'} />
+							</SkeletonItem>
+					  ))
+					: data?.pages.map((page) =>
+							page.posts.map((item, i) =>
+								i !== page.posts.length - 1 ? (
+									<ArticleItem key={item.id} post={item} />
+								) : (
+									<ArticleItem key={item.id} post={item} ref={scrollRef} />
+								)
+							)
+					  )}
+			</ContentBox>
 		</Wrapper>
 	);
 };

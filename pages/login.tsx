@@ -2,13 +2,16 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
-import useUser from '../lib/hooks/useUsers';
 import { useState, useRef } from 'react';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
 import API from '../lib/utils/api';
 import { useDispatch } from 'react-redux';
 import { loginProcess } from '../lib/store/authSlice';
+import { http } from '../lib/utils/serverLessAPI';
+import { parse, serialize } from 'cookie';
+import { login, UserAuthProps } from '../lib/services/UserService';
+import { useMutation } from 'react-query';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -47,46 +50,48 @@ const StyledInputForm = styled(Input)`
 const StyledButton = styled(Button)`
 	width: 100%;
 `;
-interface UserAuthProps {
-	success: boolean;
-	token?: string;
-	id: string;
-	username: string;
-}
-const StyledControl = styled.div``;
-const login = async (values: { id: string; password: string }) => {
-	try {
-		let { data }: AxiosResponse<UserAuthProps> = await API.post(
-			`/login`,
-			values
-		);
 
-		return data;
-	} catch (err) {
-		console.error(err);
-	}
-};
+const StyledControl = styled.div``;
+
 const Login = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const inputRef = useRef({});
-	const onFinish = async () => {
-		const inputIdValue = inputRef.current['id'].state.value;
-		const inputPasswordValue = inputRef.current['password'].state.value;
-		const result = await login({
-			id: inputIdValue,
-			password: inputPasswordValue,
-		});
-		const { username, success, token } = result;
-		if (success) {
-			API.defaults.headers.common['Authorization'] = token;
-			process.browser && localStorage.setItem('token', token);
-			console.log(token);
-			dispatch(loginProcess({ id: inputIdValue, username }));
-			router.push('/');
-		} else {
-			alert('그런 계정은 없답니다~');
+	const inputRef = useRef<{ id: Input | null; password: Input | null }>({
+		id: null,
+		password: null,
+	});
+	const loginMutation = useMutation(
+		({ id, password }: { id: string; password: string }) =>
+			login({ id, password }),
+		{
+			onSuccess: (variables) => {
+				const { username, success, id, token: accessToken } = variables!;
+				if (success) {
+					console.log(username, success, accessToken);
+					const bearer = `Bearer ${accessToken}`;
+					http.defaults.headers.Authorization = bearer;
+					dispatch(
+						loginProcess({
+							userData: { id, username },
+							accessToken,
+							isLogin: true,
+						})
+					);
+					router.push('/');
+				} else {
+					alert('그런 계정은 없답니다~');
+				}
+			},
+			onError: (e: Error) => {
+				alert('에러가 발생했습니다');
+				console.log(e.message);
+			},
 		}
+	);
+	const onFinish = async () => {
+		const id = inputRef.current['id']!.state.value;
+		const password = inputRef.current['password']!.state.value;
+		loginMutation.mutate({ id, password });
 	};
 
 	return (

@@ -1,37 +1,67 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import { PostProps } from './ArticleList';
+import React, { Ref } from 'react';
+import { RefObject } from 'react';
+import { Tag } from 'antd';
+import ArticleList from './ArticleList';
 const Wrapper = styled.div`
-	padding: 15px;
+	padding: 30px 0;
+	box-sizing: border-box;
+	min-height: 215px;
+
+	border-bottom: 1px solid ${Palette.gray_1};
+	margin-bottom: -1px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 `;
 
 const ContentBox = styled.div`
-	min-height: 150px;
-	border: 1px solid ${Palette.gray_1};
-	background: ${Palette.white};
-	padding: 20px;
-	box-sizing: border-box;
 	display: flex;
+	flex: 4;
 `;
 
-const ImageBox = styled.div`
-	width: 108px;
-	height: 108px;
-	background: green;
-	margin-right: 30px;
-`;
-
-const Content = styled.div`
+const MainBox = styled.div`
+	flex: 4;
 	display: flex;
 	flex-direction: column;
 `;
 
 const Title = styled.div`
 	font-size: 20px;
+	flex: 1;
+`;
+
+const UserBox = styled.div`
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+`;
+
+const UserImage = styled.div`
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background: gray;
+`;
+
+const TagBox = styled.div`
+	flex: 1;
+	display: flex;
+	align-items: center;
+	.item_4 {
+		flex: 4;
+	}
+	.item_1 {
+		flex: 1;
+	}
 `;
 
 const Description = styled.div`
+	flex: 3;
 	width: 400px;
 	display: block;
 	margin-top: 6px;
@@ -47,34 +77,39 @@ const Description = styled.div`
 	}
 `;
 
-const SubDescription = styled.div`
-	margin-top: 6px;
-`;
-
-const ArticleItem = ({ post }: { post: PostProps }) => {
-	const { id, user_id, created_at, preview_text, title } = post;
-	return (
-		<Wrapper>
-			<Link href={`/article/${id}`}>
-				<a>
-					<ContentBox>
-						<ImageBox />
-						<Content>
-							<Title>{title}</Title>
-							<Description>
-								<div>
-									<span>{preview_text}</span>
-								</div>
-							</Description>
-							<SubDescription>
-								{created_at} {user_id}
-							</SubDescription>
-						</Content>
-					</ContentBox>
-				</a>
-			</Link>
-		</Wrapper>
-	);
-};
-
+const ArticleItem = React.forwardRef(
+	({ post }: { post: PostPreview }, ref: any) => {
+		const { id, user_id, created_at, preview_text, title } = post;
+		const date = created_at.toString().split('T')[0];
+		return (
+			<>
+				<Link href={`/article/${id}`}>
+					<a>
+						<Wrapper ref={ref}>
+							<ContentBox>
+								<MainBox>
+									<Title>{title}</Title>
+									<Description>
+										<div>
+											<span>{preview_text}</span>
+										</div>
+									</Description>
+								</MainBox>
+								<UserBox>
+									<UserImage />
+									{user_id}
+								</UserBox>
+							</ContentBox>
+							<TagBox>
+								<span className='item_4'>안녕 </span>
+								<span className='item_1'>{date}</span>
+							</TagBox>
+						</Wrapper>
+					</a>
+				</Link>
+			</>
+		);
+	}
+);
+ArticleItem.displayName = 'ArticleItem';
 export default ArticleItem;

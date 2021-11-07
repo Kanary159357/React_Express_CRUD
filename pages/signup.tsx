@@ -4,7 +4,7 @@ import { Palette } from '../lib/styles/Theme';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import axios, { AxiosError } from 'axios';
-import { API } from '../lib/utils/api';
+import API from '../lib/utils/api';
 import { Router, useRouter } from 'next/dist/client/router';
 import { useDebounce } from '../lib/hooks/useDebounce';
 import {
@@ -12,6 +12,7 @@ import {
 	passwordValidation,
 	usernameValidation,
 } from '../lib/utils/validation';
+import { InputProps, signup, signupCheckId } from '../lib/services/UserService';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -50,16 +51,6 @@ const StyledButton = styled(Button)`
 	width: 100%;
 `;
 
-const Label = styled.div`
-	margin-right: auto;
-`;
-
-interface InputProps {
-	id: string;
-	password: string;
-	username: string;
-}
-
 const Signup = () => {
 	const [inputs, setInputs] = useState<InputProps>({
 		id: '',
@@ -70,22 +61,19 @@ const Signup = () => {
 	const router = useRouter();
 	const { id, password, username } = inputs;
 	const { dValue: debouncedId, debounceLoading } = useDebounce(id, 500);
-	const { data: idCheckdata } = useQuery(
+	const { data: idCheckdata, isLoading } = useQuery(
 		['idCheck', debouncedId],
-		() => API.get(`/signup/checkId/${debouncedId}`),
+		() => signupCheckId(debouncedId),
 		{ enabled: debouncedId.length > 2 }
 	);
-	const loginResultMutation = useMutation(
-		(content: any) => API.post('/signup', content),
-		{
-			onSuccess: () => {
-				router.push('/login');
-			},
-			onError: (error: AxiosError) => {
-				alert(error.response.data);
-			},
-		}
-	);
+	const signupMutation = useMutation((content: InputProps) => signup(content), {
+		onSuccess: () => {
+			router.push('/login');
+		},
+		onError: (error: AxiosError) => {
+			alert(error.response?.data);
+		},
+	});
 
 	const onSubmit = () => {
 		if (
@@ -93,12 +81,11 @@ const Signup = () => {
 			idValidation(id) &&
 			usernameValidation(username)
 		) {
-			loginResultMutation.mutate(inputs);
+			signupMutation.mutate(inputs);
 		} else {
 			alert('입력을 확인하세요');
 		}
 	};
-
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value, name } = e.target;
 		if (name == 'passwordValid') {
@@ -109,6 +96,10 @@ const Signup = () => {
 			[name]: value,
 		});
 	};
+	useEffect(() => {
+		console.log(idCheckdata);
+	}, [idCheckdata]);
+
 	return (
 		<Wrapper>
 			<LoginBox>
@@ -127,7 +118,7 @@ const Signup = () => {
 						<></>
 					) : debounceLoading ? (
 						<div>가능한지 알아보는중..</div>
-					) : !idCheckdata?.data[0].cnt ? (
+					) : idCheckdata && idCheckdata[0].cnt == 0 ? (
 						<div>가능한 아이디입니다</div>
 					) : (
 						<div>불가능한 아이디입니다!</div>
