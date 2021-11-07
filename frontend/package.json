@@ -1,0 +1,45 @@
+{
+	"name": "frontend",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"dependencies": {
+		"@ant-design/icons": "^4.6.4",
+		"@reduxjs/toolkit": "^1.6.1",
+		"@types/cookie": "^0.4.1",
+		"@types/set-cookie-parser": "^2.4.1",
+		"@types/styled-components": "^5.1.13",
+		"@zeit/next-css": "^1.0.1",
+		"antd": "^4.16.11",
+		"axios": "^0.21.1",
+		"axios-auth-refresh": "^3.2.0",
+		"babel-plugin-styled-components": "^1.13.2",
+		"cookie": "^0.4.1",
+		"eslint-config-next": "11.0.1",
+		"file": "^0.2.2",
+		"next": "^11.1.0",
+		"next-images": "^1.8.1",
+		"next-redux-wrapper": "^7.0.5",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-query": "^3.23.2",
+		"react-redux": "^7.2.5",
+		"redux-typescript": "^1.2.1",
+		"set-cookie-parser": "^2.4.8",
+		"slate": "^0.65.3",
+		"slate-history": "^0.65.3",
+		"slate-react": "^0.65.3",
+		"styled-components": "^5.3.1",
+		"typescript": "^4.3.5"
+	},
+	"scripts": {
+		"dev": "next",
+		"build": "next build",
+		"start": "next start -p 8000",
+		"lint": "next lint"
+	},
+	"devDependencies": {
+		"@types/react": "^17.0.17",
+		"eslint": "^7.32.0"
+	}
+}
