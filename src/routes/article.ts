@@ -27,13 +27,13 @@ router.get(
 	})
 );
 router.post(
-	'/:id/edit',
+	'/:id',
 	verifyToken,
-	asyncWrap(async (req: Request<ArticleProps>, res) => {
+	asyncWrap(async (req: Request, res) => {
 		const { title, content, preview_text } = req.body;
 		try {
 			const data = await database.query(
-				`UPDATE POSTS SET content = '${content}', preview_text='${preview_text}', updated_at = NOW(),  title='${title}' WHERE id ='${req.params.id}' and user_id= '${req.user}'`
+				`UPDATE POSTS SET content = '${content}', preview_text='${preview_text}', updated_at = NOW(),  title='${title}' WHERE id ='${req.params.id}' and user_id= '${req.user.id}'`
 			);
 			res.send(data);
 		} catch (e) {

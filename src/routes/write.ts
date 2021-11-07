@@ -15,7 +15,8 @@ router.post(
 	verifyToken,
 	asyncWrap(async (req: Request<WriteProps>, res: Response) => {
 		const { content, preview, title } = req.body;
-		const id = req.user;
+		const { id } = req.user;
+		console.log(id);
 		try {
 			await database.query(
 				`INSERT INTO posts(user_id, content, preview_text,title) values ('${id}','${content}', '${preview}', '${title}');`

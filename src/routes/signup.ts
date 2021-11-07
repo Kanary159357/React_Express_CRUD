@@ -3,6 +3,7 @@ import { asyncWrap } from '../utils/asyncWrapper';
 import database from '../config/database';
 
 import { Request, Response } from 'express';
+import { hash } from 'bcrypt';
 const router = Router();
 
 interface InputProps {
@@ -18,23 +19,21 @@ router.post(
 		const { id, password, username } = req.body;
 		date.setHours(date.getHours() + 9);
 		const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
-
-		console.log(formattedDate);
-		console.log(req.body);
+		const encryptPassword = await hash(password, 1);
 		try {
 			await database.query(
-				`INSERT INTO users values ('${id}', '${password}', '${username}', '${formattedDate}');`
+				`INSERT INTO users values ('${id}', '${encryptPassword}', '${username}', '${formattedDate}');`
 			);
+			res.send('Successfully registered');
 		} catch (e) {
 			res.status(400).send('실패데수네~');
 		}
 	})
 );
 router.get(
-	'/checkId/:id',
+	'/:id',
 	asyncWrap(async (req: Request<InputProps>, res: Response) => {
 		const id = req.params.id;
-		console.log({ id });
 		try {
 			const [rows] = await database.query(
 				`SELECT count(id) as cnt FROM users WHERE id='${id}';`

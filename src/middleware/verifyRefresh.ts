@@ -3,8 +3,8 @@ import { decode, verify } from 'jsonwebtoken';
 import { promisify } from 'util';
 import redisClient from '../config/redis';
 import {
-	verifyToken,
-	verifyRefreshToken,
+	getVerifiedToken,
+	getVerifiedRefreshToken,
 	getNewAccessToken,
 } from '../utils/jwt-utils';
 
@@ -27,8 +27,11 @@ const verifyRefeshToken = async (
 			});
 		}
 
-		const authResult = verifyToken(token);
-		const refreshResult = await verifyRefreshToken(token, decoded as string);
+		const authResult = getVerifiedToken(token);
+		const refreshResult = await getVerifiedRefreshToken(
+			token,
+			decoded as string
+		);
 
 		if (!authResult.ok && authResult.message === 'jwt expired') {
 			if (!refreshResult.ok) {
