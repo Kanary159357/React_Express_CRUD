@@ -25,7 +25,6 @@ router.get(
 			UserQueryProps[]
 		>(`SELECT id, username FROM Users WHERE id='${req.user.id}'`);
 		if (!rows.length) {
-			console.log('false');
 			return res.json({ success: false });
 		} else {
 			return res.send({
@@ -43,11 +42,8 @@ router.post(
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
 		>(`SELECT id, username, password FROM Users WHERE id='${req.body.id}'`);
-		console.log(req.body, rows[0]);
 		const comparison = await compare(req.body.password, rows[0].password);
-		console.log(comparison);
 		if (!rows.length) {
-			console.log('false');
 			return res.json({ success: false });
 		} else {
 			let accesstoken = getNewAccessToken(rows[0].id);

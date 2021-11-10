@@ -33,7 +33,7 @@ const RoundLabel = (props: Props) => {
 	const { onClick } = props;
 	return (
 		<Wrapper {...props} onClick={() => onClick}>
-			<span>{props.children}</span>
+			{props.children}
 		</Wrapper>
 	);
 };

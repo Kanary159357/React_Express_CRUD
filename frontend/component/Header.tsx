@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../lib/store';
 import RoundLabel from './base/RoundLabel';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
+import { logout, useLogoutMutation } from '../lib/services/UserService';
+import { useMutation } from 'react-query';
+import { logoutProcess } from '../lib/store/authSlice';
+import { Router, useRouter } from 'next/dist/client/router';
 const Wrapper = styled.div<{ checkTop: boolean }>`
 	height: 70px;
 	position: sticky;
@@ -29,6 +33,40 @@ const Title = styled.div`
 	font-size: 24px;
 	text-align: center;
 	flex: 1;
+`;
+
+const DropMenu = styled.div`
+	position: relative;
+	display: inline-block;
+	.dropDiv {
+		display: none;
+		position: absolute;
+		left: 50%;
+		transform: translate(-50%, 0);
+		min-width: 160px;
+		z-index: 1;
+		background: ${Palette.white};
+		border-radius: 25px;
+		box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+		a {
+			color: black;
+			display: block;
+			&:hover {
+				background: ${Palette.gray_1};
+			}
+			&:last-child {
+				border-radius: 0 0 25px 25px;
+			}
+			&:first-child {
+				border-radius: 25px 25px 0 0;
+			}
+		}
+	}
+	&:hover {
+		.dropDiv {
+			display: block;
+		}
+	}
 `;
 
 const PostSearch = styled.div`
@@ -55,6 +93,7 @@ const PostSearch = styled.div`
 const UserBox = styled(RoundLabel)`
 	margin: 0 20px;
 	cursor: pointer;
+	min-width: 160px;
 `;
 const Header = () => {
 	const user = useSelector((state: AppState) => state.authReducer);
@@ -63,7 +102,9 @@ const Header = () => {
 	const handleScroll = () => {
 		setCheckTop(window.scrollY > 70);
 	};
-
+	const dispatch = useDispatch();
+	const router = useRouter();
+	const logoutMutation = useLogoutMutation();
 	useEffect(() => {
 		window.addEventListener('scroll', handleScroll);
 		return () => {
@@ -85,7 +126,26 @@ const Header = () => {
 					</div>
 				</PostSearch>
 				<UserBox fontColor={Palette.white} background={Palette.orange_1}>
-					{user.isLogin ? user.userData?.username : '로그인하세요'}
+					{user.isLogin ? (
+						<DropMenu>
+							{user.userData?.username}
+							<div className='dropDiv'>
+								<Link href='/mypage'>
+									<a>마이페이지</a>
+								</Link>
+								<Link href='/'>
+									<a onClick={() => logoutMutation.mutate()}>로그아웃</a>
+								</Link>
+								<Link href='/write'>
+									<a>글쓰기</a>
+								</Link>
+							</div>
+						</DropMenu>
+					) : (
+						<Link href='/login'>
+							<a>로그인하세요</a>
+						</Link>
+					)}
 				</UserBox>
 			</Box>
 		</Wrapper>

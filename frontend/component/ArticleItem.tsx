@@ -2,9 +2,8 @@ import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
 import React, { Ref } from 'react';
-import { RefObject } from 'react';
-import { Tag } from 'antd';
-import ArticleList from './ArticleList';
+import UserBox from './UserBox';
+
 const Wrapper = styled.div`
 	padding: 30px 0;
 	box-sizing: border-box;
@@ -28,24 +27,13 @@ const MainBox = styled.div`
 	flex-direction: column;
 `;
 
+const SubBox = styled.div`
+	flex: 1;
+`;
+
 const Title = styled.div`
 	font-size: 20px;
 	flex: 1;
-`;
-
-const UserBox = styled.div`
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-around;
-	align-items: center;
-`;
-
-const UserImage = styled.div`
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	background: gray;
 `;
 
 const TagBox = styled.div`
@@ -95,10 +83,9 @@ const ArticleItem = React.forwardRef(
 										</div>
 									</Description>
 								</MainBox>
-								<UserBox>
-									<UserImage />
-									{user_id}
-								</UserBox>
+								<SubBox>
+									<UserBox user_id={user_id} />
+								</SubBox>
 							</ContentBox>
 							<TagBox>
 								<span className='item_4'>안녕 </span>

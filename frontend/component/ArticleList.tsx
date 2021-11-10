@@ -12,7 +12,7 @@ import SkeletonBox from './Skeleton/SkeletonBox';
 
 const Wrapper = styled.div`
 	width: 626px;
-	border: 1px solid gray;
+	box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
 	border-radius: 25px;
 `;
 
@@ -32,7 +32,7 @@ const CustomSelect = styled.select`
 	}
 	option {
 		&:hover,
-		&::focus {
+		&:focus {
 			background: black;
 		}
 	}
@@ -51,7 +51,6 @@ const CustomSelect = styled.select`
 const ContentBox = styled.div`
 	background: ${Palette.white};
 	padding: 0 30px 60px 30px;
-	border: 1px solid gray;
 	border-radius: 0 0 25px 25px;
 `;
 
@@ -85,11 +84,11 @@ const ArticleList = () => {
 				</CustomSelect>
 			</ListControlBox>
 			<ContentBox>
-				{true
-					? new Array(5).fill(1).map((_, i) => (
+				{!data
+					? new Array(4).fill(1).map((_, i) => (
 							<SkeletonItem key={i}>
-								<SkeletonBox height={'30px'} width={'500px'} />
-								<SkeletonBox height={'20px'} width={'400px'} />
+								<SkeletonBox height={'20px'} width={'300px'} />
+								<SkeletonBox height={'20px'} width={'300px'} />
 								<SkeletonBox height={'20px'} width={'300px'} />
 							</SkeletonItem>
 					  ))

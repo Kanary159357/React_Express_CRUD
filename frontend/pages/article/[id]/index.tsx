@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Content } from 'antd/lib/layout/layout';
 import { useSelector } from 'react-redux';
-import { RootState, wrapper } from '../../../lib/store';
+import { AppState, wrapper } from '../../../lib/store';
 import { Store } from 'redux';
 import { GetServerSidePropsContext } from 'next';
 import { authSSR } from '../../../lib/utils/authSSR';
@@ -60,9 +60,7 @@ const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const { data, isLoading } = useQuery('post', () => getPost(id as string));
-	const userData = useSelector(
-		(state: RootState) => state.authReducer.userData
-	);
+	const userData = useSelector((state: AppState) => state.authReducer.userData);
 	const user_id = userData ? userData.id : null;
 	const post: { title: string; content: Descendant[] } = {
 		title: data[0].title,
@@ -78,21 +76,31 @@ const Article = () => {
 	);
 
 	return (
-		<MainLayout>
-			<Editor readOnly post={post} title={data[0].title} />
-			{user_id == data[0].user_id && (
-				<ControlDiv>
-					<Button>
-						<Link href={`/article/${id}/edit`}>
-							<a>수정</a>
-						</Link>
-					</Button>
-					<Button onClick={() => deleteMutation.mutate(id as string)}>
-						삭제
-					</Button>
-				</ControlDiv>
+		<>
+			{data && (
+				<MainLayout>
+					<Editor
+						readOnly
+						post={post}
+						created_at={data[0].created_at}
+						title={data[0].title}
+						user_id={data[0].user_id}
+					/>
+					{user_id == data[0].user_id && (
+						<ControlDiv>
+							<Button>
+								<Link href={`/article/${id}/edit`}>
+									<a>수정</a>
+								</Link>
+							</Button>
+							<Button onClick={() => deleteMutation.mutate(id as string)}>
+								삭제
+							</Button>
+						</ControlDiv>
+					)}
+				</MainLayout>
 			)}
-		</MainLayout>
+		</>
 	);
 };
 
