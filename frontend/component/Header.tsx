@@ -7,8 +7,6 @@ import RoundLabel from './base/RoundLabel';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { logout, useLogoutMutation } from '../lib/services/UserService';
-import { useMutation } from 'react-query';
-import { logoutProcess } from '../lib/store/authSlice';
 import { Router, useRouter } from 'next/dist/client/router';
 const Wrapper = styled.div<{ checkTop: boolean }>`
 	height: 70px;
@@ -102,8 +100,6 @@ const Header = () => {
 	const handleScroll = () => {
 		setCheckTop(window.scrollY > 70);
 	};
-	const dispatch = useDispatch();
-	const router = useRouter();
 	const logoutMutation = useLogoutMutation();
 	useEffect(() => {
 		window.addEventListener('scroll', handleScroll);

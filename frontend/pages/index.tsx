@@ -27,8 +27,6 @@ export const getServerSideProps: GetServerSideProps =
 		};
 	});
 const Index = () => {
-	const dispatch = useDispatch();
-
 	return (
 		<MainLayout>
 			<Title>메인페이지</Title>

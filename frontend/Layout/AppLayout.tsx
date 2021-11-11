@@ -10,7 +10,6 @@ const Wrapper = styled.div`
 const AppLayout = ({ children }) => {
 	return (
 		<Wrapper>
-			<Header />
 			<main>{children}</main>
 		</Wrapper>
 	);

@@ -137,10 +137,4 @@ const RichEditor = ({
 	);
 };
 
-const initialValue: Descendant[] = [
-	{
-		type: 'paragraph',
-		children: [{ text: '' }],
-	},
-];
 export default RichEditor;

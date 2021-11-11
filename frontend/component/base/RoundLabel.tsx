@@ -18,7 +18,7 @@ const Wrapper = styled.div<Props>`
 `;
 
 interface RoundLabelProps {
-	width: number;
+	width: string;
 	height: number;
 	border: string;
 	background: string;

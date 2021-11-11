@@ -14,11 +14,27 @@ export const getPost = async (id: string) => {
 	}
 };
 
+export interface queryObject {
+	[key: string]: string;
+}
+
 export const getPosts = async ({ pageParam = null }) => {
 	let { data, status }: AxiosResponse<GetPosts> = await http.get(
 		`/api/main?cursor=${pageParam}`
 	);
 	return data;
+};
+
+export const makeGetPostsFn = (query: queryObject) => {
+	const str = Object.keys(query).reduce((acc, cur) => {
+		return acc + `&${cur}=${query[cur]}`;
+	}, '');
+	return async function ({ pageParam = null }: { pageParam: string | null }) {
+		let { data, status }: AxiosResponse<GetPosts> = await http.get(
+			`/api/main?cursor=${pageParam}`
+		);
+		return data;
+	};
 };
 
 export const getMyPosts = async () => {

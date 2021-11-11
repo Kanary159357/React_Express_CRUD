@@ -1,36 +1,41 @@
-import { Button, Checkbox, Form, Input } from 'antd';
-import axios, { AxiosResponse } from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
 import { useState, useRef } from 'react';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import API from '../lib/utils/api';
 import { useDispatch } from 'react-redux';
 import { loginProcess } from '../lib/store/authSlice';
 import { http } from '../lib/utils/serverLessAPI';
 import { parse, serialize } from 'cookie';
 import { login, UserAuthProps } from '../lib/services/UserService';
 import { useMutation } from 'react-query';
+import RoundLabel from '../component/base/RoundLabel';
 const Wrapper = styled.div`
-	height: calc(100vh - 70px);
 	width: 100%;
+	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 `;
 
 const LoginBox = styled.div`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	border: 1px solid ${Palette.gray_1};
 	border-radius: 16px;
 	background: ${Palette.white};
 	width: 500px;
 	height: 300px;
 	padding: 30px;
+	box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
 `;
 
 const Header = styled.div`
-	font-size: 24px;
+	font-size: 40px;
+	color: ${Palette.orange_1};
+	font-weight: 800;
 `;
 
 const StyledForm = styled.form`
@@ -41,22 +46,30 @@ const StyledForm = styled.form`
 	align-items: center;
 `;
 
-const StyledInputForm = styled(Input)`
+const StyledInput = styled.input`
 	display: flex;
+	outline: none;
 	height: 50px;
+	width: 80%;
+	background: ${Palette.gray_0};
 	flex-direction: row;
+	border: none;
+	&:focus {
+		outline: none;
+	}
 `;
 
-const StyledButton = styled(Button)`
-	width: 100%;
+const Button = styled.div`
+	width: 80%;
 `;
-
-const StyledControl = styled.div``;
 
 const Login = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const inputRef = useRef<{ id: Input | null; password: Input | null }>({
+	const inputRef = useRef<{
+		id: HTMLInputElement | null;
+		password: HTMLInputElement | null;
+	}>({
 		id: null,
 		password: null,
 	});
@@ -84,13 +97,13 @@ const Login = () => {
 			},
 			onError: (e: Error) => {
 				alert('에러가 발생했습니다');
-				console.log(e.message);
 			},
 		}
 	);
 	const onFinish = async () => {
-		const id = inputRef.current['id']!.state.value;
-		const password = inputRef.current['password']!.state.value;
+		const id = inputRef.current['id']!.value;
+		const password = inputRef.current['password']!.value;
+		console.log(id, password);
 		loginMutation.mutate({ id, password });
 	};
 
@@ -99,23 +112,27 @@ const Login = () => {
 			<LoginBox>
 				<StyledForm>
 					<Header>LOGIN</Header>
-					<StyledInputForm
+					<StyledInput
 						placeholder='아이디'
 						type='text'
-						ref={(el) => (inputRef.current['id'] = el)}
-						name='id'></StyledInputForm>
-					<StyledInputForm
+						name='id'
+						ref={(el) => (inputRef.current['id'] = el)}></StyledInput>
+					<StyledInput
 						placeholder='비밀번호'
 						type='text'
 						ref={(el) => (inputRef.current['password'] = el)}
-						name='password'></StyledInputForm>
-					<StyledButton onClick={onFinish}>전송</StyledButton>
-					<StyledControl>
-						<Checkbox>30일동안 기억하기</Checkbox>
+						name='password'></StyledInput>
+					<Button onClick={onFinish}>
+						<RoundLabel background={Palette.orange_1} width='100%'>
+							전송
+						</RoundLabel>
+					</Button>
+
+					<div>
 						<Link href='/signup'>
 							<a>회원가입</a>
 						</Link>
-					</StyledControl>
+					</div>
 				</StyledForm>
 			</LoginBox>
 		</Wrapper>

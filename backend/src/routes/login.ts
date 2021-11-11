@@ -42,8 +42,12 @@ router.post(
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
 		>(`SELECT id, username, password FROM Users WHERE id='${req.body.id}'`);
+
+		if (!rows.length || !rows[0]) return res.json({ success: false });
+		console.log(req.body.password, rows[0].password);
 		const comparison = await compare(req.body.password, rows[0].password);
-		if (!rows.length) {
+		console.log(comparison);
+		if (!comparison) {
 			return res.json({ success: false });
 		} else {
 			let accesstoken = getNewAccessToken(rows[0].id);
@@ -56,10 +60,11 @@ router.post(
 				}
 			);
 			redisClient.set(rows[0].id, refreshToken);
+			redisClient.expire(rows[0].id, 60 * 60 * 24 * 7);
 			res.header({
 				'Set-Cookie': cookie.serialize('refreshToken', refreshToken, {
 					httpOnly: true,
-					maxAge: 120 * 60 * 60, // 7 days
+					maxAge: 60 * 60 * 24 * 7, // 7 days
 					sameSite: true,
 					path: '/',
 				}),

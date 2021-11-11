@@ -5,7 +5,7 @@ import { Input } from 'antd';
 import MainLayout from '../Layout/MainLayout';
 import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
 import { useRef } from 'react';
-import { getPosts } from '../lib/services/PostService';
+import { getPosts, queryObject } from '../lib/services/PostService';
 import { useInfiniteQuery } from 'react-query';
 import { useEffect } from 'react';
 import SkeletonBox from './Skeleton/SkeletonBox';
@@ -65,9 +65,9 @@ const SkeletonItem = styled.div`
 	margin-bottom: -1px;
 `;
 
-const ArticleList = () => {
+const ArticleList = ({ query }: { query?: Object }) => {
 	const scrollRef = useRef(null);
-	const { data, isLoading, hasNextPage, fetchNextPage } =
+	const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
 		useInfiniteQuery<GetPosts>('postsList', getPosts, {
 			getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
 		});
@@ -101,6 +101,14 @@ const ArticleList = () => {
 								)
 							)
 					  )}
+				{isFetchingNextPage &&
+					new Array(4).fill(1).map((_, i) => (
+						<SkeletonItem key={i}>
+							<SkeletonBox height={'20px'} width={'300px'} />
+							<SkeletonBox height={'20px'} width={'300px'} />
+							<SkeletonBox height={'20px'} width={'300px'} />
+						</SkeletonItem>
+					))}
 			</ContentBox>
 		</Wrapper>
 	);

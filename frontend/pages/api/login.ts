@@ -6,6 +6,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { method, headers, body } = req;
 	if (method === 'POST') {
 		try {
+			console.log(body);
 			const { data, headers: returnedHeaders } = await API.post(
 				'/login',
 				body,
@@ -13,7 +14,6 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 					headers,
 				}
 			);
-			console.log(returnedHeaders);
 			Object.keys(returnedHeaders).forEach((key) =>
 				res.setHeader(key, returnedHeaders[key])
 			);

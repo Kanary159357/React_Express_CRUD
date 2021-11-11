@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Header from '../component/Header';
 
 const Wrapper = styled.div`
 	width: 626px;
@@ -7,9 +8,10 @@ const Wrapper = styled.div`
 
 const MainLayout = ({ children }) => {
 	return (
-		<Wrapper>
-			<>{children}</>
-		</Wrapper>
+		<>
+			<Header />
+			<Wrapper>{children}</Wrapper>
+		</>
 	);
 };
 
