@@ -12,7 +12,6 @@ router.get(
 			`SELECT MIN(id) as min from posts`
 		);
 		const min = rows[0].min;
-		console.log(cursor);
 		if (cursor == 'null') {
 			const [rows] = await database.query<any>(
 				`SELECT id,user_id, preview_text, title, created_at FROM posts order by id DESC LIMIT 3`
