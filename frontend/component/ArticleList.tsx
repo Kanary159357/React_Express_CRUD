@@ -5,7 +5,11 @@ import { Input } from 'antd';
 import MainLayout from '../Layout/MainLayout';
 import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
 import { useRef } from 'react';
-import { getPosts, queryObject } from '../lib/services/PostService';
+import {
+	getPosts,
+	makeGetPostsFn,
+	queryObject,
+} from '../lib/services/PostService';
 import { useInfiniteQuery } from 'react-query';
 import { useEffect } from 'react';
 import SkeletonBox from './Skeleton/SkeletonBox';
@@ -65,13 +69,15 @@ const SkeletonItem = styled.div`
 	margin-bottom: -1px;
 `;
 
-const ArticleList = ({ query }: { query?: Object }) => {
+const ArticleList = ({ query }: { query?: queryObject }) => {
 	const scrollRef = useRef(null);
 	const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-		useInfiniteQuery<GetPosts>('postsList', getPosts, {
+		useInfiniteQuery<GetPosts>('postsList', makeGetPostsFn(query!), {
 			getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
 		});
-
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 	useIntersectionObserver(scrollRef, () => hasNextPage && fetchNextPage());
 	return (
 		<Wrapper>
@@ -84,23 +90,27 @@ const ArticleList = ({ query }: { query?: Object }) => {
 				</CustomSelect>
 			</ListControlBox>
 			<ContentBox>
-				{!data
-					? new Array(4).fill(1).map((_, i) => (
-							<SkeletonItem key={i}>
-								<SkeletonBox height={'20px'} width={'300px'} />
-								<SkeletonBox height={'20px'} width={'300px'} />
-								<SkeletonBox height={'20px'} width={'300px'} />
-							</SkeletonItem>
-					  ))
-					: data?.pages.map((page) =>
-							page.posts.map((item, i) =>
-								i !== page.posts.length - 1 ? (
-									<ArticleItem key={item.id} post={item} />
-								) : (
-									<ArticleItem key={item.id} post={item} ref={scrollRef} />
-								)
+				{!data ? (
+					new Array(4).fill(1).map((_, i) => (
+						<SkeletonItem key={i}>
+							<SkeletonBox height={'20px'} width={'300px'} />
+							<SkeletonBox height={'20px'} width={'300px'} />
+							<SkeletonBox height={'20px'} width={'300px'} />
+						</SkeletonItem>
+					))
+				) : data?.pages[0].posts.length == 0 ? (
+					<div>난데모나이야</div>
+				) : (
+					data?.pages.map((page) =>
+						page.posts.map((item, i) =>
+							i !== page.posts.length - 1 ? (
+								<ArticleItem key={item.id} post={item} />
+							) : (
+								<ArticleItem key={item.id} post={item} ref={scrollRef} />
 							)
-					  )}
+						)
+					)
+				)}
 				{isFetchingNextPage &&
 					new Array(4).fill(1).map((_, i) => (
 						<SkeletonItem key={i}>

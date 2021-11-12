@@ -3,10 +3,11 @@ import ArticleList from '../component/ArticleList';
 
 import MyPageLayout from '../Layout/MyPageLayout';
 import { GetServerSideProps } from 'next';
-import { wrapper } from '../lib/store';
+import { AppState, wrapper } from '../lib/store';
 import { authSSR } from '../lib/utils/authSSR';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { getMyPosts, makeGetPostsFn } from '../lib/services/PostService';
+import { useSelector } from 'react-redux';
 const Wrapper = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -30,11 +31,13 @@ export const getServerSideProps: GetServerSideProps =
 	});
 
 const MyPage = () => {
-	makeGetPostsFn({ id: 'hihi' });
+	const user_id = useSelector(
+		(state: AppState) => state.authReducer.userData?.id
+	);
 	return (
 		<MyPageLayout>
 			<Wrapper>
-				<ArticleList />
+				<ArticleList query={{ user_id: user_id! }} />
 			</Wrapper>
 		</MyPageLayout>
 	);

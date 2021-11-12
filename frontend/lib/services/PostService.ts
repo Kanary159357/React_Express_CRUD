@@ -19,19 +19,24 @@ export interface queryObject {
 }
 
 export const getPosts = async ({ pageParam = null }) => {
-	let { data, status }: AxiosResponse<GetPosts> = await http.get(
-		`/api/main?cursor=${pageParam}`
-	);
+	let basequery = `/api/main?id=${pageParam}`;
+	let { data, status }: AxiosResponse<GetPosts> = await http.get(basequery);
 	return data;
 };
 
 export const makeGetPostsFn = (query: queryObject) => {
-	const str = Object.keys(query).reduce((acc, cur) => {
-		return acc + `&${cur}=${query[cur]}`;
-	}, '');
-	return async function ({ pageParam = null }: { pageParam: string | null }) {
+	let str = '';
+	console.log(query);
+	if (query) {
+		str = Object.keys(query).reduce((acc, cur) => {
+			return acc + `&${cur}=${query[cur]}`;
+		}, '');
+	}
+
+	console.log(str);
+	return async function ({ pageParam = null }) {
 		let { data, status }: AxiosResponse<GetPosts> = await http.get(
-			`/api/main?cursor=${pageParam}`
+			`/api/main?id=${pageParam}` + str
 		);
 		return data;
 	};
