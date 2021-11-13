@@ -1,18 +1,14 @@
-import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import axios, { AxiosError } from 'axios';
-import API from '../lib/utils/api';
-import { Router, useRouter } from 'next/dist/client/router';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/dist/client/router';
 import { useDebounce } from '../lib/hooks/useDebounce';
-import {
-	idValidation,
-	passwordValidation,
-	usernameValidation,
-} from '../lib/utils/validation';
+import { idValidation, passwordValidation } from '../lib/utils/validation';
 import { InputProps, signup, signupCheckId } from '../lib/services/UserService';
+import StyledInput from '../component/base/StyledInput';
+import RoundLabel from '../component/base/RoundLabel';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -30,7 +26,9 @@ const LoginBox = styled.div`
 `;
 
 const Header = styled.div`
-	font-size: 24px;
+	font-size: 40px;
+	color: ${Palette.orange_1};
+	font-weight: 800;
 `;
 
 const StyledForm = styled.form`
@@ -41,14 +39,9 @@ const StyledForm = styled.form`
 	align-items: center;
 `;
 
-const StyledInputForm = styled(Input)`
-	display: flex;
-	height: 50px;
-	flex-direction: row;
-`;
-
-const StyledButton = styled(Button)`
-	width: 100%;
+const Button = styled.div`
+	width: 80%;
+	cursor: pointer;
 `;
 
 const Signup = () => {
@@ -76,11 +69,7 @@ const Signup = () => {
 	});
 
 	const onSubmit = () => {
-		if (
-			passwordValidation(password, passwordValid) &&
-			idValidation(id) &&
-			usernameValidation(username)
-		) {
+		if (passwordValidation(password, passwordValid) && idValidation(id)) {
 			signupMutation.mutate(inputs);
 		} else {
 			alert('입력을 확인하세요');
@@ -96,24 +85,18 @@ const Signup = () => {
 			[name]: value,
 		});
 	};
-	useEffect(() => {
-		console.log(idCheckdata);
-	}, [idCheckdata]);
-
 	return (
 		<Wrapper>
 			<LoginBox>
 				<StyledForm>
 					<Header>SIGNUP</Header>
-					<StyledInputForm
+					<StyledInput
 						name={'id'}
 						value={id}
 						onChange={onChange}
 						placeholder='아이디'
 						autoComplete='off'
 					/>
-					<div>영문, 숫자, 특수문자포함 8~15자</div>
-
 					{debouncedId.length < 2 ? (
 						<></>
 					) : debounceLoading ? (
@@ -123,22 +106,20 @@ const Signup = () => {
 					) : (
 						<div>불가능한 아이디입니다!</div>
 					)}
-					<StyledInputForm
+					<StyledInput
 						name={'username'}
 						value={username}
 						onChange={onChange}
 						placeholder='닉네임'
 					/>
-					<div>영문, 숫자, 특수문자포함 8~15자</div>
-
-					<StyledInputForm
+					<StyledInput
 						name={'password'}
 						value={password}
 						onChange={onChange}
 						type='password'
 						placeholder='비밀번호'
 					/>
-					<StyledInputForm
+					<StyledInput
 						name={'passwordValid'}
 						value={passwordValid}
 						onChange={onChange}
@@ -146,12 +127,18 @@ const Signup = () => {
 						placeholder='비밀번호 확인'
 					/>
 					<div>영문, 숫자, 특수문자포함 8~15자</div>
-					{passwordValidation(password, passwordValid) ? (
+					{password.length > 8 &&
+					passwordValidation(password, passwordValid) ? (
 						<div>사용가능한 비밀번호입니다</div>
 					) : (
 						<div>잘못된 비밀번호입니다</div>
 					)}
-					<StyledButton onClick={onSubmit}>전송</StyledButton>
+					<Button onClick={onSubmit}>
+						{' '}
+						<RoundLabel background={Palette.orange_1} width='100%'>
+							전송
+						</RoundLabel>
+					</Button>
 				</StyledForm>
 			</LoginBox>
 		</Wrapper>

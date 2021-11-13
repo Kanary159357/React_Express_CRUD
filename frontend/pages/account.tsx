@@ -1,4 +1,3 @@
-import { Button, Input } from 'antd';
 import { GetServerSideProps } from 'next';
 import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -9,9 +8,11 @@ import { authSSR } from '../lib/utils/authSSR';
 import { http } from '../lib/utils/serverLessAPI';
 import { useRef } from 'react';
 import { passwordValidation } from '../lib/utils/validation';
+import StyledInput from '../component/base/StyledInput';
+import { Button } from '../component/base/EditorBase';
+import RoundLabel from '../component/base/RoundLabel';
 
 const Wrapper = styled.div`
-	margin-top: 50px;
 	background: ${Palette.white};
 	height: 600px;
 	display: flex;
@@ -27,10 +28,17 @@ const Row = styled.div`
 
 const RowTitle = styled.div`
 	margin-right: 40px;
+	flex: 1;
 `;
 
 const RowContent = styled.div`
 	display: flex;
+	width: 100%;
+	flex: 3;
+	flex-direction: column;
+	* + * {
+		margin-top: 10px;
+	}
 `;
 
 export const getServerSideProps: GetServerSideProps =
@@ -71,8 +79,8 @@ const changeAccountPassword = async () => {
 };
 
 const Account = () => {
-	const inputRef = useRef<string>();
-	const inputValidRef = useRef<string>();
+	const inputRef = useRef(null);
+	const inputValidRef = useRef(null);
 	const onChange = () => {
 		if (passwordValidation(inputRef.current!, inputValidRef.current!)) {
 			changeAccountPassword();
@@ -101,16 +109,20 @@ const Account = () => {
 						<Row>
 							<RowTitle>비밀번호 수정</RowTitle>
 							<RowContent>
-								<Input
-									ref={inputRef.current}
+								<StyledInput
+									ref={inputRef}
 									placeholder='비밀번호를 입력하세요'
 								/>
-								ㅤ &nbsp; &nbsp;
-								<Input
-									ref={inputValidRef.current}
+
+								<StyledInput
+									ref={inputValidRef}
 									placeholder='비밀번호를 입력하세요'
 								/>
-								<Button onClick={onChange}>수정</Button>
+								<Button onClick={onChange}>
+									<RoundLabel background={Palette.orange_1} width='100%'>
+										수정
+									</RoundLabel>
+								</Button>
 							</RowContent>
 						</Row>
 					</>

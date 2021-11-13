@@ -10,6 +10,8 @@ import { parse, serialize } from 'cookie';
 import { login, UserAuthProps } from '../lib/services/UserService';
 import { useMutation } from 'react-query';
 import RoundLabel from '../component/base/RoundLabel';
+import StyledForm from '../component/base/StyledForm';
+import StyledInput from '../component/base/StyledInput';
 const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
@@ -36,27 +38,6 @@ const Header = styled.div`
 	font-size: 40px;
 	color: ${Palette.orange_1};
 	font-weight: 800;
-`;
-
-const StyledForm = styled.form`
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: 240px;
-	align-items: center;
-`;
-
-const StyledInput = styled.input`
-	display: flex;
-	outline: none;
-	height: 50px;
-	width: 80%;
-	background: ${Palette.gray_0};
-	flex-direction: row;
-	border: none;
-	&:focus {
-		outline: none;
-	}
 `;
 
 const Button = styled.div`
@@ -103,7 +84,6 @@ const Login = () => {
 	const onFinish = async () => {
 		const id = inputRef.current['id']!.value;
 		const password = inputRef.current['password']!.value;
-		console.log(id, password);
 		loginMutation.mutate({ id, password });
 	};
 
@@ -119,7 +99,7 @@ const Login = () => {
 						ref={(el) => (inputRef.current['id'] = el)}></StyledInput>
 					<StyledInput
 						placeholder='비밀번호'
-						type='text'
+						type='password'
 						ref={(el) => (inputRef.current['password'] = el)}
 						name='password'></StyledInput>
 					<Button onClick={onFinish}>
