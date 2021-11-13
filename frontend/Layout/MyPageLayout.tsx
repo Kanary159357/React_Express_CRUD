@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 const MyPageControl = styled.div`
 	display: flex;
 	flex-direction: row;
-	margin-top: 50px;
+	margin: 50px 0;
 `;
 
 const Title = styled.div`

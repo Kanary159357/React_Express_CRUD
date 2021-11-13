@@ -4,7 +4,7 @@ import ArticleItem from './ArticleItem';
 import { Input } from 'antd';
 import MainLayout from '../Layout/MainLayout';
 import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
-import { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
 	getPosts,
 	makeGetPostsFn,
@@ -69,24 +69,33 @@ const SkeletonItem = styled.div`
 	margin-bottom: -1px;
 `;
 
+type orderProps = 'asc' | 'desc';
+
 const ArticleList = ({ query }: { query?: queryObject }) => {
 	const scrollRef = useRef(null);
+	const [order, setOrder] = useState<orderProps>('desc');
 	const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-		useInfiniteQuery<GetPosts>('postsList', makeGetPostsFn(query!), {
-			getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
-		});
+		useInfiniteQuery<GetPosts>(
+			['postsList', query, order],
+			makeGetPostsFn({ ...query!, order }),
+			{
+				getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+			}
+		);
+	const onOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setOrder(e.target.value as orderProps);
+		console.log('hi');
+	};
 	useEffect(() => {
-		console.log(data);
-	}, [data]);
+		console.log(order);
+	}, [order]);
 	useIntersectionObserver(scrollRef, () => hasNextPage && fetchNextPage());
 	return (
 		<Wrapper>
 			<ListControlBox>
-				<CustomSelect>
-					<option value='최신순 정렬'>최신순 정렬</option>
-					<option value='lime'>Lime</option>
-					<option value='coconut'>Coconut</option>
-					<option value='mango'>Mango</option>
+				<CustomSelect value={order} onChange={onOrderChange}>
+					<option value='desc'>내림차순</option>
+					<option value='asc'>오름차순</option>
 				</CustomSelect>
 			</ListControlBox>
 			<ContentBox>

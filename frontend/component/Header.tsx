@@ -29,8 +29,8 @@ const Box = styled.div`
 
 const Title = styled.div`
 	font-size: 24px;
-	text-align: center;
 	flex: 1;
+	margin: 0 20px;
 `;
 
 const DropMenu = styled.div`
@@ -67,27 +67,6 @@ const DropMenu = styled.div`
 	}
 `;
 
-const PostSearch = styled.div`
-	border-bottom: 1px solid black;
-	display: flex;
-	height: 50px;
-	flex: 4;
-	margin: 0 20px;
-	input {
-		flex: 4;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-	div {
-		flex: 1;
-		font-size: 24px;
-		line-height: 50px;
-		cursor: pointer;
-		vertical-align: middle;
-		text-align: right;
-	}
-`;
 const UserBox = styled(RoundLabel)`
 	margin: 0 20px;
 	cursor: pointer;
@@ -115,12 +94,7 @@ const Header = () => {
 						<a>CRUED</a>
 					</Link>
 				</Title>
-				<PostSearch>
-					<input></input>
-					<div>
-						<SearchOutlined />
-					</div>
-				</PostSearch>
+
 				<UserBox fontColor={Palette.white} background={Palette.orange_1}>
 					{user.isLogin ? (
 						<DropMenu>
