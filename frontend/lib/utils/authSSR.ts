@@ -11,6 +11,7 @@ export const authSSR = async (
 	try {
 		const refreshResp = await http.get('/api/refresh', { headers });
 		const { username, id, accessToken } = refreshResp.data;
+		console.log(refreshResp.data);
 		const bearer = `Bearer ${accessToken}`;
 		http.defaults.headers.Authorization = bearer;
 		store.dispatch(

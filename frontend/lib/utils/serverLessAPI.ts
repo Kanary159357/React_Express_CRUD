@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { Store } from 'redux';
 import { updateAccessToken } from '../store/authSlice';
@@ -10,7 +11,7 @@ export const injectStoreToInterceptor = (_store: Store) => {
 };
 
 export const http = axios.create({
-	baseURL: 'http://localhost:3000',
+	baseURL: 'http://localhost:4000',
 	withCredentials: true,
 });
 
@@ -33,7 +34,7 @@ createAuthRefreshInterceptor(http, (failedRequest) =>
 
 			return Promise.resolve();
 		})
-		.catch(() => {
+		.catch((e) => {
 			alert('다시 로그인해주세요');
 		})
 );

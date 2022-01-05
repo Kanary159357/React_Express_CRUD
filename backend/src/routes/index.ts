@@ -14,9 +14,8 @@ interface Post extends RowDataPacket {
 }
 
 router.get(
-	'',
+	'/',
 	asyncWrap(async (req: Request, res: Response) => {
-		console.log('index!');
 		const baseMinMaxQuery = `SELECT MIN(id) as min, MAX(id) as max from posts`;
 		const basePostQuery = `SELECT id,user_id, preview_text, title, created_at FROM posts`;
 		const query = Object.entries(req.query).filter(([key, value]) => {

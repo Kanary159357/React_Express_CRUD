@@ -20,17 +20,21 @@ router.get(
 	'/',
 	verifyToken,
 	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
-		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
-			UserQueryProps[]
-		>(`SELECT id, username FROM Users WHERE id='${req.user.id}'`);
-		if (!rows.length) {
-			return res.json({ success: false });
-		} else {
-			return res.send({
-				success: true,
-				username: rows[0].username,
-				id: rows[0].id,
-			});
+		try {
+			const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
+				UserQueryProps[]
+			>(`SELECT id, username FROM users WHERE id='${req.user.id}'`);
+			if (!rows.length) {
+				return res.json({ success: false });
+			} else {
+				return res.send({
+					success: true,
+					username: rows[0].username,
+					id: rows[0].id,
+				});
+			}
+		} catch {
+			res.status(404).send({ success: false });
 		}
 	})
 );
@@ -40,7 +44,7 @@ router.post(
 	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
-		>(`SELECT id, username, password FROM Users WHERE id='${req.body.id}'`);
+		>(`SELECT id, username, password FROM users WHERE id='${req.body.id}'`);
 
 		if (!rows.length || !rows[0]) return res.json({ success: false });
 		console.log(req.body.password, rows[0].password);

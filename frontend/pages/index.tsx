@@ -29,9 +29,7 @@ const Index = () => {
 	return (
 		<MainLayout>
 			<Title>메인페이지</Title>
-			<Content>
-				<ArticleList />
-			</Content>
+			<Content>{<ArticleList />}</Content>
 		</MainLayout>
 	);
 };

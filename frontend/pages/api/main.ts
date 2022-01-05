@@ -11,9 +11,7 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
 		return acc + str;
 	}, '?');
 	try {
-		const { data } = await API.get(`/${str}`, {
-			headers,
-		});
+		const { data } = await API.get(`/${str}`);
 		res.status(200).json(data);
 	} catch (e) {
 		console.log(e);

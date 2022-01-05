@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import API from '../../lib/utils/api';
 
@@ -6,7 +6,6 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { method, headers, body } = req;
 	if (method === 'POST') {
 		try {
-			console.log(body);
 			const { data, headers: returnedHeaders } = await API.post(
 				'/login',
 				body,
@@ -20,10 +19,8 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			res.status(200).json(data);
 		} catch (e) {
 			if (axios.isAxiosError(e)) {
-				const { response } = e;
-				console.log(response);
-				const { status, data } = response as AxiosResponse<any>;
-				res.status(status).json(data);
+				res.status(404).send('hi');
+				console.log(e.message);
 			}
 		}
 	}
@@ -36,10 +33,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			res.status(200).json(data);
 		} catch (e) {
 			if (axios.isAxiosError(e)) {
-				const { response } = e;
-				console.log(response);
-				const { status, data } = response as AxiosResponse<any>;
-				res.status(status).json(data);
+				console.log(e);
 			}
 		}
 	}

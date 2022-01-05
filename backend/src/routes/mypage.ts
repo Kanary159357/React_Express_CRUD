@@ -12,7 +12,7 @@ router.get(
 	asyncWrap(async (req: Request, res: Response) => {
 		try {
 			const [rows]: [any, FieldPacket[]] = await database.query<any>(
-				`SELECT id, user_id, created_at, preview_text, title FROM Posts WHERE user_id='${req.user.id}'`
+				`SELECT id, user_id, created_at, preview_text, title FROM posts WHERE user_id='${req.user.id}'`
 			);
 			return res.send(rows);
 		} catch (e) {
