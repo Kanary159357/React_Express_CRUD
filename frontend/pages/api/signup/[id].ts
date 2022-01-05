@@ -1,9 +1,9 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import API from '../../../lib/utils/api';
 
 const signup = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
+	const { headers } = req;
 	try {
 		const { data } = await API.get(`/signup/${req.query.id}`, {
 			headers,

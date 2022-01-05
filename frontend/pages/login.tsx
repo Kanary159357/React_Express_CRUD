@@ -1,13 +1,12 @@
 import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { loginProcess } from '../lib/store/authSlice';
 import { http } from '../lib/utils/serverLessAPI';
-import { parse, serialize } from 'cookie';
-import { login, UserAuthProps } from '../lib/services/UserService';
+import { login } from '../lib/services/UserService';
 import { useMutation } from 'react-query';
 import RoundLabel from '../component/base/RoundLabel';
 import StyledForm from '../component/base/StyledForm';
@@ -76,7 +75,7 @@ const Login = () => {
 					alert('그런 계정은 없답니다~');
 				}
 			},
-			onError: (e: Error) => {
+			onError: () => {
 				alert('에러가 발생했습니다');
 			},
 		}

@@ -5,18 +5,14 @@ import styled from 'styled-components';
 import MainLayout from '../../../Layout/MainLayout';
 import Link from 'next/link';
 import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
-import { AxiosResponse } from 'axios';
 import API from '../../../lib/utils/api';
-import { useEffect } from 'react';
-
 import dynamic from 'next/dynamic';
-import { Content } from 'antd/lib/layout/layout';
 import { useSelector } from 'react-redux';
 import { AppState, wrapper } from '../../../lib/store';
-import { Store } from 'redux';
 import { GetServerSidePropsContext } from 'next';
 import { authSSR } from '../../../lib/utils/authSSR';
 import { getPost } from '../../../lib/services/PostService';
+
 const ControlDiv = styled.div`
 	display: flex;
 	justify-content: flex-end;
@@ -43,7 +39,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 				};
 			}
 		} catch (e) {}
-		console.log('hi');
 		return {
 			props: {
 				dehydratedState: dehydrate(queryClient),
@@ -59,7 +54,7 @@ const Editor = dynamic(() => import('../../../component/RichEditor'), {
 const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	const { data, isLoading } = useQuery('post', () => getPost(id as string));
+	const { data } = useQuery('post', () => getPost(id as string));
 	const userData = useSelector((state: AppState) => state.authReducer.userData);
 	const user_id = userData ? userData.id : null;
 	const post: { title: string; content: Descendant[] } = {

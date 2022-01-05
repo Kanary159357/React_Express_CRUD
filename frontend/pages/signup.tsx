@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/dist/client/router';
@@ -54,7 +54,7 @@ const Signup = () => {
 	const router = useRouter();
 	const { id, password, username } = inputs;
 	const { dValue: debouncedId, debounceLoading } = useDebounce(id, 500);
-	const { data: idCheckdata, isLoading } = useQuery(
+	const { data: idCheckdata } = useQuery(
 		['idCheck', debouncedId],
 		() => signupCheckId(debouncedId),
 		{ enabled: debouncedId.length > 2 }

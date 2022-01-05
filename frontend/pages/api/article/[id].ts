@@ -7,12 +7,9 @@ const article = async (req: NextApiRequest, res: NextApiResponse) => {
 	const id = req.query.id;
 	if (method === 'GET') {
 		try {
-			const { data, headers: returnedHeaders } = await API.get(
-				`/article/${id}`,
-				{
-					headers,
-				}
-			);
+			const { data } = await API.get(`/article/${id}`, {
+				headers,
+			});
 			res.status(200).json(data);
 		} catch (e) {
 			if (axios.isAxiosError(e)) {

@@ -1,20 +1,16 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import MainLayout from '../Layout/MainLayout';
 import { Button } from 'antd';
-import { Descendant, Node } from 'slate';
-import API from '../lib/utils/api';
-import { useSelector } from 'react-redux';
-import { RootState } from '../lib/store';
+import { Descendant } from 'slate';
+
 import { useMutation } from 'react-query';
-import { Router, useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/dist/client/router';
 import { AxiosError } from 'axios';
 import { writePost } from '../lib/services/PostService';
-const Wrapper = styled.div`
-	min-height: 800px;
-`;
+
 const ControlDiv = styled.div`
 	display: flex;
 	justify-content: flex-end;
@@ -46,7 +42,7 @@ const Write = () => {
 	const mutation = useMutation(
 		({ post }: { post: TitleAndDescription }) => writePost(post),
 		{
-			onSuccess: (response) => {
+			onSuccess: () => {
 				router.push(`/`);
 			},
 			onError: (e: AxiosError) => {

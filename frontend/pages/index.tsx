@@ -6,7 +6,6 @@ import { wrapper } from '../lib/store';
 
 import { GetServerSideProps } from 'next';
 import { authSSR } from '../lib/utils/authSSR';
-import { useDispatch } from 'react-redux';
 
 const Content = styled.div`
 	display: flex;

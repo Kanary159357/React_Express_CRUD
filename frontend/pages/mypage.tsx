@@ -5,8 +5,6 @@ import MyPageLayout from '../Layout/MyPageLayout';
 import { GetServerSideProps } from 'next';
 import { AppState, wrapper } from '../lib/store';
 import { authSSR } from '../lib/utils/authSSR';
-import { dehydrate, QueryClient, useQuery } from 'react-query';
-import { getMyPosts, makeGetPostsFn } from '../lib/services/PostService';
 import { useSelector } from 'react-redux';
 const Wrapper = styled.div`
 	display: flex;

@@ -1,9 +1,8 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import API from '../../lib/utils/api';
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
+	const { headers } = req;
 	const str = Object.keys(req.query).reduce((acc, cur, i) => {
 		let str = `${cur}=${req.query[cur]}`;
 		if (i !== 0) {

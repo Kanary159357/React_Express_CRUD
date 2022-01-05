@@ -1,9 +1,7 @@
 import axios from 'axios';
-import * as setCookie from 'set-cookie-parser';
-import * as cookie from 'cookie';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { Store } from 'redux';
-import { resetUser, updateAccessToken } from '../store/authSlice';
+import { updateAccessToken } from '../store/authSlice';
 
 let store: Store;
 
@@ -35,7 +33,7 @@ createAuthRefreshInterceptor(http, (failedRequest) =>
 
 			return Promise.resolve();
 		})
-		.catch((e) => {
+		.catch(() => {
 			alert('다시 로그인해주세요');
 		})
 );

@@ -5,7 +5,8 @@ import { serialize } from '../utils/slateFn';
 
 export const getPost = async (id: string) => {
 	try {
-		let { data }: AxiosResponse<any> = await http.get(`/api/article/${id}`);
+		const { data }: AxiosResponse<any> = await http.get(`/api/article/${id}`);
+		console.log(data);
 		return data;
 	} catch (err) {
 		if (err instanceof Error) {
@@ -19,23 +20,20 @@ export interface queryObject {
 }
 
 export const getPosts = async ({ pageParam = null }) => {
-	let basequery = `/api/main?id=${pageParam}`;
-	let { data, status }: AxiosResponse<GetPosts> = await http.get(basequery);
+	const basequery = `/api/main?id=${pageParam}`;
+	const { data }: AxiosResponse<GetPosts> = await http.get(basequery);
 	return data;
 };
 
 export const makeGetPostsFn = (query: queryObject) => {
 	let str = '';
-	console.log(query);
 	if (query) {
 		str = Object.keys(query).reduce((acc, cur) => {
 			return acc + `&${cur}=${query[cur]}`;
 		}, '');
 	}
-
-	console.log(str);
 	return async function ({ pageParam = null }) {
-		let { data, status }: AxiosResponse<GetPosts> = await http.get(
+		const { data }: AxiosResponse<GetPosts> = await http.get(
 			`/api/main?id=${pageParam}` + str
 		);
 		return data;

@@ -1,7 +1,6 @@
 import 'antd/dist/antd.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import GlobalStyle from '../lib/styles/GlobalStyle';
-import { Provider } from 'react-redux';
 import AppLayout from '../Layout/AppLayout';
 import { store, wrapper } from '../lib/store';
 import { Hydrate } from 'react-query/hydration';

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
+import { dehydrate, QueryClient, useQuery } from 'react-query';
 import styled from 'styled-components';
 import MyPageLayout from '../Layout/MyPageLayout';
 import { wrapper } from '../lib/store';
@@ -88,7 +88,7 @@ const Account = () => {
 			alert('비밀번호를 다시 확인해주세요');
 		}
 	};
-	const { data, isLoading } = useQuery('account', getAccountInfo);
+	const { data } = useQuery('account', getAccountInfo);
 	return (
 		<MyPageLayout>
 			<Wrapper>

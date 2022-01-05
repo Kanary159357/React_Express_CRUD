@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import Link from 'next/link';
 const GlobalStyle = createGlobalStyle`
 
     html body{

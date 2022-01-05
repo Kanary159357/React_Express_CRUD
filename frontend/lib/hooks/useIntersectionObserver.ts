@@ -1,22 +1,18 @@
 import { MutableRefObject, useEffect } from 'react';
-import { useRef } from 'react';
 
-function useIntersectionObserver(target: MutableRefObject<any>, fn: Function) {
+function useIntersectionObserver(target: MutableRefObject<any>, fn: () => any) {
 	useEffect(() => {
-		function callback(
-			entries: IntersectionObserverEntry[],
-			observer: IntersectionObserver
-		) {
+		function callback(entries: IntersectionObserverEntry[]) {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					fn();
 				}
 			});
 		}
-		let option = {
+		const option = {
 			threshold: 1,
 		};
-		let observer = new IntersectionObserver(callback, option);
+		const observer = new IntersectionObserver(callback, option);
 		if (!target || !target.current) {
 			return;
 		}

@@ -1,5 +1,5 @@
 interface GetPosts {
-	nextCursor: Number;
+	nextCursor: number;
 	posts: PostPreview[];
 }
 

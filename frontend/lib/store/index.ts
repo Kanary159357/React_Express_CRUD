@@ -1,16 +1,10 @@
-import {
-	AnyAction,
-	combineReducers,
-	configureStore,
-	Store,
-} from '@reduxjs/toolkit';
-import { Context, createWrapper, HYDRATE, MakeStore } from 'next-redux-wrapper';
+import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
+import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import authReducer from './authSlice';
 
 const combinedReducers = combineReducers({
 	authReducer: authReducer,
 });
-type reducerState = typeof combineReducers;
 const rootReducer = (state: any, action: AnyAction) => {
 	if (action.type === HYDRATE) {
 		const clientstate = { ...state };

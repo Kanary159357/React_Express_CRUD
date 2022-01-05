@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
-import API from '../utils/api';
 import { http } from '../utils/serverLessAPI';
 import { store } from '../store';
 import { logoutProcess } from '../store/authSlice';
@@ -18,7 +17,7 @@ export interface InputProps {
 	username: string;
 }
 export const login = async (values: { id: string; password: string }) => {
-	let { data, headers }: AxiosResponse<UserAuthProps> = await http.post(
+	const { data }: AxiosResponse<UserAuthProps> = await http.post(
 		`/api/login`,
 		values
 	);
@@ -29,7 +28,7 @@ export const signup = async (content: InputProps) =>
 	await http.post('/api/signup', content);
 
 export const signupCheckId = async (id: string) => {
-	let { data }: AxiosResponse<any> = await http.get(`/api/signup/${id}`);
+	const { data }: AxiosResponse<any> = await http.get(`/api/signup/${id}`);
 	return data;
 };
 export function useLogoutMutation() {
