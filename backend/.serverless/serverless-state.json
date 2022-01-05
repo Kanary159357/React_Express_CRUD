@@ -179,7 +179,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless/dev/1641385377737-2022-01-05T12:22:57.737Z/serverless.zip"
+                "S3Key": "serverless/serverless/dev/1641394700206-2022-01-05T14:58:20.206Z/serverless.zip"
               },
               "Handler": "handler.handler",
               "Runtime": "nodejs12.x",
@@ -202,14 +202,14 @@
               "HelloLogGroup"
             ]
           },
-          "HelloLambdaVersionTC8mG2keyJfSP0d3EGV3zGII0V8BZS2ZnRSqcrapK6c": {
+          "HelloLambdaVersionJsy0ga8y3ADfBcByTGk2qfqhcV0NujhFJ5orYYu0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "vC69xc8ahfUtSfGNMLCYMd85FVOvzCiXasUqWfkmmWE="
+              "CodeSha256": "yW1Zb/L/iIR2v9+/c1D89SkYYmxLWWLiO2PIJeq+s8M="
             }
           },
           "ApiGatewayRestApi": {
@@ -335,7 +335,7 @@
               "HelloLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1641385364369": {
+          "ApiGatewayDeployment1641394685519": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -398,7 +398,7 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersionTC8mG2keyJfSP0d3EGV3zGII0V8BZS2ZnRSqcrapK6c"
+              "Ref": "HelloLambdaVersionJsy0ga8y3ADfBcByTGk2qfqhcV0NujhFJ5orYYu0"
             },
             "Export": {
               "Name": "sls-serverless-dev-HelloLambdaFunctionQualifiedArn"
@@ -522,7 +522,7 @@
         "includeModules": true
       },
       "serverless-offline": {
-        "httpPort": 5000
+        "httpPort": 8000
       }
     },
     "plugins": [
@@ -549,7 +549,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersionTC8mG2keyJfSP0d3EGV3zGII0V8BZS2ZnRSqcrapK6c"
+        "versionLogicalId": "HelloLambdaVersionJsy0ga8y3ADfBcByTGk2qfqhcV0NujhFJ5orYYu0"
       }
     },
     "configValidationMode": "warn",
@@ -576,7 +576,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless/dev/1641385377737-2022-01-05T12:22:57.737Z",
+    "artifactDirectoryName": "serverless/serverless/dev/1641394700206-2022-01-05T14:58:20.206Z",
     "artifact": ""
   }
 }

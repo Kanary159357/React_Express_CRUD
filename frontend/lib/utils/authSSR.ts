@@ -7,11 +7,11 @@ export const authSSR = async (
 	context: GetServerSidePropsContext,
 	store: Store
 ) => {
-	const headers = context.req.headers;
 	try {
-		const refreshResp = await http.get('/api/refresh', { headers });
+		const refreshResp = await http.get('/api/refresh', {
+			headers: context.req.headers,
+		});
 		const { username, id, accessToken } = refreshResp.data;
-		console.log(refreshResp.data);
 		const bearer = `Bearer ${accessToken}`;
 		http.defaults.headers.Authorization = bearer;
 		store.dispatch(
@@ -19,6 +19,7 @@ export const authSSR = async (
 		);
 		return { success: true, accessToken, username, id };
 	} catch (e) {
+		console.log(e);
 		return { success: false, error: e };
 	}
 };

@@ -1,18 +1,19 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import API from '../../lib/utils/api';
 
 const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
-
+	const { headers } = req;
 	try {
 		const { data } = await API.get('/refresh', {
-			headers,
+			headers: {
+				cookie: headers.cookie,
+			},
 		});
 		res.status(200).json(data);
 	} catch (e) {
 		if (axios.isAxiosError(e)) {
-			res.status(404).send(e.message);
+			res.status(404).send(headers.cookie);
 		}
 	}
 };

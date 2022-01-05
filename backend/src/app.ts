@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 import signup from './routes/signup';
 import login from './routes/login';
 import write from './routes/write';
@@ -14,6 +15,7 @@ import path = require('path');
 const app: express.Application = express();
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 

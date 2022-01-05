@@ -11,7 +11,9 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
 		return acc + str;
 	}, '?');
 	try {
-		const { data } = await API.get(`/${str}`);
+		const { data } = await API.get(`/${str}`, {
+			headers: { accept: 'application/json', cookie: req.headers.cookie },
+		});
 		res.status(200).json(data);
 	} catch (e) {
 		console.log(e);

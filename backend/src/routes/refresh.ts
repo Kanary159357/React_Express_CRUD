@@ -9,14 +9,18 @@ const router = Router();
 router.get(
 	'/',
 	asyncWrap(async (req: Request, res: Response) => {
-		if (!req.headers.cookie) {
+		const headers = req.headers;
+		if (!headers.cookie) {
 			return res.status(403).send('No Cookie');
 		}
-		const { refreshToken } = parse(req.headers.cookie);
-
+		const parsedCookie = parse(headers.cookie);
+		const refreshToken = parsedCookie["'refreshToken"].replace("'", '');
 		if (!refreshToken) {
 			console.log('No Refresh Token');
-			return res.status(403).send('No RefreshToken');
+			return res.status(403).send({
+				cookie: headers.cookie,
+				setter: parsedCookie["'refreshToken"],
+			});
 		}
 
 		try {

@@ -35,6 +35,7 @@ createAuthRefreshInterceptor(http, (failedRequest) =>
 			return Promise.resolve();
 		})
 		.catch((e) => {
+			alert(e);
 			alert('다시 로그인해주세요');
 		})
 );
