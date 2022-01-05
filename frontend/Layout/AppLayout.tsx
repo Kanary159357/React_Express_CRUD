@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 	min-height: calc(100%);
 `;
 
-const AppLayout = ({ children }) => {
+const AppLayout: React.FC = ({ children }) => {
 	return (
 		<Wrapper>
 			<main>{children}</main>

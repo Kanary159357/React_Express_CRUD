@@ -1,6 +1,5 @@
 /* eslint-disable react/display-name */
 import React, { Ref, PropsWithChildren } from 'react';
-import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 
 interface BaseProps {
@@ -23,14 +22,14 @@ export const Button = React.forwardRef(
 			} & BaseProps
 		>,
 		ref: Ref<OrNull<HTMLSpanElement>>
-	) => <span {...props} ref={ref} />
+	) => <span {...props} ref={ref as React.RefObject<HTMLDivElement>} />
 );
 
 export const Icon = React.forwardRef(
 	(
 		{ className, ...props }: PropsWithChildren<BaseProps>,
 		ref: Ref<OrNull<HTMLSpanElement>>
-	) => <span {...props} ref={ref} />
+	) => <span {...props} ref={ref as React.RefObject<HTMLDivElement>} />
 );
 
 const StyledToolBar = styled.div`
@@ -50,12 +49,12 @@ export const Menu = React.forwardRef(
 	(
 		{ className, ...props }: PropsWithChildren<BaseProps>,
 		ref: Ref<OrNull<HTMLDivElement>>
-	) => <StyledToolBar {...props} ref={ref} />
+	) => <StyledToolBar {...props} ref={ref as React.RefObject<HTMLDivElement>} />
 );
 
 export const Toolbar = React.forwardRef(
 	(
 		{ className, ...props }: PropsWithChildren<BaseProps>,
 		ref: Ref<OrNull<HTMLDivElement>>
-	) => <Menu {...props} ref={ref} />
+	) => <Menu {...props} ref={ref as React.RefObject<HTMLDivElement>} />
 );

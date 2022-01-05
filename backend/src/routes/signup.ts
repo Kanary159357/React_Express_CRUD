@@ -3,7 +3,7 @@ import { asyncWrap } from '../utils/asyncWrapper';
 import database from '../config/database';
 
 import { Request, Response } from 'express';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 const router = Router();
 
 interface InputProps {

@@ -14,26 +14,25 @@ interface Post extends RowDataPacket {
 }
 
 router.get(
-	'/',
+	'',
 	asyncWrap(async (req: Request, res: Response) => {
-		const baseMinQuery = `SELECT MIN(id) as min from posts`;
+		console.log('index!');
+		const baseMinMaxQuery = `SELECT MIN(id) as min, MAX(id) as max from posts`;
 		const basePostQuery = `SELECT id,user_id, preview_text, title, created_at FROM posts`;
 		const query = Object.entries(req.query).filter(([key, value]) => {
 			return value !== 'null' && value !== 'undefined' && key !== 'order';
 		});
+		const order = req.query.order || 'desc';
+		const orderQuery = ` order by id ${order} LIMIT 3`;
 		const whereQuery =
 			query.length !== 0
 				? query.reduce((acc, cur, i) => {
-						const large = [];
-						const small = ['id'];
 						const [k, v] = cur;
 						let str = '';
-						if (large.includes(k)) {
+						if (order === 'asc') {
 							str = `${k}>${v}`;
-						} else if (small.includes(k)) {
-							str = `${k}<${v}`;
 						} else {
-							str = `${k}='${v}'`;
+							str = `${k}<${v}`;
 						}
 						if (i !== 0) {
 							str = ' AND ' + str;
@@ -41,21 +40,21 @@ router.get(
 						return acc + str;
 				  }, ' WHERE ')
 				: '';
-		const order = req.query.order || 'desc';
-		const orderQuery = ` order by id ${order} LIMIT 3`;
-		const MinQuery = baseMinQuery + whereQuery;
+
+		const MinMaxQuery = baseMinMaxQuery + whereQuery;
 		const PostQuery = basePostQuery + whereQuery + orderQuery;
-
-		const [minRows] = await database.query<any>(MinQuery);
-		const min = minRows[0].min;
-
+		const [minmaxRows] = await database.query<Post[]>(MinMaxQuery);
+		const { min, max } = minmaxRows[0];
 		const [rows] = await database.query<Post[]>(PostQuery);
+		const nextCursor =
+			rows.length == 0
+				? undefined
+				: order === 'desc'
+				? rows[rows.length - 1].id > min && rows[rows.length - 1].id
+				: rows[rows.length - 1].id < max && rows[rows.length - 1].id;
 		res.send({
 			posts: rows,
-			nextCursor:
-				rows.length !== 0
-					? rows[rows.length - 1].id > min && rows[rows.length - 1].id
-					: undefined,
+			nextCursor,
 		});
 	})
 );

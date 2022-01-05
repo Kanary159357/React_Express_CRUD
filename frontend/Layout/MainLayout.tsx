@@ -6,7 +6,7 @@ const Wrapper = styled.div`
 	margin: 0 auto;
 `;
 
-const MainLayout = ({ children }) => {
+const MainLayout: React.FC = ({ children }) => {
 	return (
 		<>
 			<Header />

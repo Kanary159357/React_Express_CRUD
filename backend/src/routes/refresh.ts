@@ -1,14 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { verify } from 'jsonwebtoken';
-import { promisify } from 'util';
-import redisClient from '../config/redis';
 import { AccessTokenType } from '../types/TokenType';
 import { asyncWrap } from '../utils/asyncWrapper';
-import {
-	getNewAccessToken,
-	getVerifiedRefreshToken,
-	getVerifiedToken,
-} from '../utils/jwt-utils';
+import { getNewAccessToken, getVerifiedRefreshToken } from '../utils/jwt-utils';
 import { decode } from 'jsonwebtoken';
 import { parse } from 'cookie';
 const router = Router();

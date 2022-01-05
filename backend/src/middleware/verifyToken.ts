@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { decode, JwtPayload, verify } from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken';
 import { AccessTokenType } from '../types/TokenType';
-import { getVerifiedToken } from '../utils/jwt-utils';
 
-const config = process.env;
 const verifyToken = (req: Request, res: Response, next: Function) => {
 	const authHeader = req.headers['authorization'];
 	if (!authHeader) {

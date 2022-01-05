@@ -1,4 +1,5 @@
-import * as express from 'express';
+import express = require('express');
+
 import * as cors from 'cors';
 import signup from './routes/signup';
 import login from './routes/login';
@@ -9,10 +10,8 @@ import refresh from './routes/refresh';
 import mypage from './routes/mypage';
 import logout from './routes/logout';
 import account from './routes/account';
-import path = require('path');
 
 const app: express.Application = express();
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
@@ -27,10 +26,10 @@ app.use('/mypage', mypage);
 app.use('/account', account);
 app.use('/', index);
 
-app.get('/test', (req, res) => {
+app.get('/', (req, res) => {
 	res.send('hi');
 });
 
-//app.listen(8001);
+app.listen(8001);
 
 export default app;

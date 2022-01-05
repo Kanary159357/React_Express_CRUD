@@ -58,6 +58,14 @@ const ContentBox = styled.div`
 	border-radius: 0 0 25px 25px;
 `;
 
+const EmptyBox = styled.div`
+	height: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 30px;
+`;
+
 const SkeletonItem = styled.div`
 	height: 215px;
 	padding: 30px 0px;
@@ -84,11 +92,7 @@ const ArticleList = ({ query }: { query?: queryObject }) => {
 		);
 	const onOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setOrder(e.target.value as orderProps);
-		console.log('hi');
 	};
-	useEffect(() => {
-		console.log(order);
-	}, [order]);
 	useIntersectionObserver(scrollRef, () => hasNextPage && fetchNextPage());
 	return (
 		<Wrapper>
@@ -108,7 +112,7 @@ const ArticleList = ({ query }: { query?: queryObject }) => {
 						</SkeletonItem>
 					))
 				) : data?.pages[0].posts.length == 0 ? (
-					<div>난데모나이야</div>
+					<EmptyBox>Empty!</EmptyBox>
 				) : (
 					data?.pages.map((page) =>
 						page.posts.map((item, i) =>

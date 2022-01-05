@@ -7,8 +7,7 @@ import { FieldPacket, RowDataPacket } from 'mysql2';
 import redisClient from '../config/redis';
 import { getNewAccessToken } from '../utils/jwt-utils';
 import verifyToken from '../middleware/verifyToken';
-import { idText } from 'typescript';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 interface UserQueryProps extends RowDataPacket {
 	id: string;
 	password: string;
@@ -20,7 +19,7 @@ const router = Router();
 router.get(
 	'/',
 	verifyToken,
-	asyncWrap(async (req, res) => {
+	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
 		const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
 			UserQueryProps[]
 		>(`SELECT id, username FROM Users WHERE id='${req.user.id}'`);

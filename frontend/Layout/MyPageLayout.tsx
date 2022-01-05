@@ -41,7 +41,7 @@ const Title = styled.div`
 	}
 `;
 
-const MyPageLayout = ({ children }) => {
+const MyPageLayout: React.FC = ({ children }) => {
 	const { asPath } = useRouter();
 
 	return (
