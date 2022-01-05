@@ -11,7 +11,7 @@ export const injectStoreToInterceptor = (_store: Store) => {
 };
 
 export const http = axios.create({
-	baseURL: 'http://localhost:4000',
+	baseURL: '/',
 	withCredentials: true,
 });
 
