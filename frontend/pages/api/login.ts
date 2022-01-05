@@ -19,7 +19,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			res.status(200).json(data);
 		} catch (e) {
 			if (axios.isAxiosError(e)) {
-				res.status(404).send('hi');
+				res.status(404).send(e.message);
 				console.log(e.message);
 			}
 		}
