@@ -64,7 +64,8 @@ const Signup = () => {
 			router.push('/login');
 		},
 		onError: (error: AxiosError) => {
-			alert(error.response?.data);
+			console.log(error);
+			alert(error);
 		},
 	});
 
