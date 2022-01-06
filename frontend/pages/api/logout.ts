@@ -1,20 +1,15 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import API from '../../lib/utils/api';
+import { API } from '../../lib/utils/serverLessAPI';
 
 const logout = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
 	try {
-		const { data } = await API.delete('/logout', {
-			headers,
+		await API.delete('/logout', {
+			headers: { Authorization: req.headers.authorization || '' },
 		});
-		res.status(200).json(data);
+		res.status(200).send({ success: true });
 	} catch (e) {
-		if (axios.isAxiosError(e)) {
-			const { response } = e;
-			const { status, data } = response as AxiosResponse<any>;
-			res.status(status).json(data);
-		}
+		res.status(404).send({ success: false });
 	}
 };
 

@@ -53,16 +53,14 @@ const Signup = () => {
 	const [passwordValid, setPasswordValid] = useState('');
 	const router = useRouter();
 	const { id, password, username } = inputs;
-	const { dValue: debouncedId, debounceLoading } = useDebounce(id, 500);
-	const { data: idCheckdata } = useQuery(
+	const { dValue: debouncedId, debounceLoading } = useDebounce<string>(id, 500);
+	const { data: idCheckdata } = useQuery<boolean>(
 		['idCheck', debouncedId],
 		() => signupCheckId(debouncedId),
 		{ enabled: debouncedId.length > 2 }
 	);
 	const signupMutation = useMutation((content: InputProps) => signup(content), {
-		onSuccess: () => {
-			router.push('/login');
-		},
+		onSuccess: () => router.push('/login'),
 		onError: (error: AxiosError) => {
 			console.log(error);
 			alert(error);
@@ -102,7 +100,7 @@ const Signup = () => {
 						<></>
 					) : debounceLoading ? (
 						<div>가능한지 알아보는중..</div>
-					) : idCheckdata && idCheckdata[0].cnt == 0 ? (
+					) : idCheckdata && idCheckdata ? (
 						<div>가능한 아이디입니다</div>
 					) : (
 						<div>불가능한 아이디입니다!</div>

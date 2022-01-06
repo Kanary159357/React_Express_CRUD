@@ -6,11 +6,8 @@ import { wrapper } from '../lib/store';
 import { Palette } from '../lib/styles/Theme';
 import { authSSR } from '../lib/utils/authSSR';
 import { http } from '../lib/utils/serverLessAPI';
-import { useRef } from 'react';
-import { passwordValidation } from '../lib/utils/validation';
-import StyledInput from '../component/base/StyledInput';
-import { Button } from '../component/base/EditorBase';
-import RoundLabel from '../component/base/RoundLabel';
+
+import { serverGetAccount } from './api/account';
 
 const Wrapper = styled.div`
 	background: ${Palette.white};
@@ -53,25 +50,23 @@ export const getServerSideProps: GetServerSideProps =
 			};
 		}
 		const queryClient = new QueryClient();
-		queryClient.prefetchQuery('account', getAccountInfo);
+		console.log(context.req.headers);
+		queryClient.prefetchQuery('account', () => serverGetAccount(context.req));
 		return {
 			props: {
 				dehydratedState: dehydrate(queryClient),
 			},
 		};
 	});
+
+export interface AccountProps {
+	id: string;
+	username: string;
+	registration_date: Date;
+}
 const getAccountInfo = async () => {
 	try {
-		const resp = await http.get('/api/account');
-		return resp.data;
-	} catch (e) {
-		console.error(e);
-	}
-};
-
-const changeAccountPassword = async () => {
-	try {
-		const resp = await http.post('/api/account');
+		const resp = await http.get<AccountProps>('/api/account');
 		return resp.data;
 	} catch (e) {
 		console.error(e);
@@ -79,15 +74,6 @@ const changeAccountPassword = async () => {
 };
 
 const Account = () => {
-	const inputRef = useRef(null);
-	const inputValidRef = useRef(null);
-	const onChange = () => {
-		if (passwordValidation(inputRef.current!, inputValidRef.current!)) {
-			changeAccountPassword();
-		} else {
-			alert('비밀번호를 다시 확인해주세요');
-		}
-	};
 	const { data } = useQuery('account', getAccountInfo);
 	return (
 		<MyPageLayout>
@@ -96,34 +82,15 @@ const Account = () => {
 					<>
 						<Row>
 							<RowTitle>아이디</RowTitle>
-							<RowContent>{data[0].id}</RowContent>
+							<RowContent>{data.id}</RowContent>
 						</Row>
 						<Row>
 							<RowTitle>닉네임</RowTitle>
-							<RowContent>{data[0].username}</RowContent>
+							<RowContent>{data.username}</RowContent>
 						</Row>
 						<Row>
 							<RowTitle>가입일자</RowTitle>
-							<RowContent>{data[0].registration_date}</RowContent>
-						</Row>
-						<Row>
-							<RowTitle>비밀번호 수정</RowTitle>
-							<RowContent>
-								<StyledInput
-									ref={inputRef}
-									placeholder='비밀번호를 입력하세요'
-								/>
-
-								<StyledInput
-									ref={inputValidRef}
-									placeholder='비밀번호를 입력하세요'
-								/>
-								<Button onClick={onChange}>
-									<RoundLabel background={Palette.orange_1} width='100%'>
-										수정
-									</RoundLabel>
-								</Button>
-							</RowContent>
+							<RowContent>{data.registration_date}</RowContent>
 						</Row>
 					</>
 				)}

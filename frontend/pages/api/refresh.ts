@@ -1,11 +1,18 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import API from '../../lib/utils/api';
+import { API } from '../../lib/utils/serverLessAPI';
+
+interface RefreshTokenProps {
+	success: boolean;
+	accessToken: string;
+	id: string;
+	username: string;
+}
 
 const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { headers } = req;
 	try {
-		const { data } = await API.get('/refresh', {
+		const { data } = await API.get<RefreshTokenProps>('/refresh', {
 			headers: {
 				cookie: headers.cookie,
 			},

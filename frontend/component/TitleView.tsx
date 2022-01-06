@@ -42,7 +42,7 @@ const TitleView = ({
 	created_at: Date;
 	user_id: string;
 }) => {
-	let calTime = extractDate(new Date(created_at!));
+	const calTime = extractDate(new Date(created_at));
 
 	return (
 		<Title>
@@ -51,7 +51,7 @@ const TitleView = ({
 				<span>{calTime.fullDate + ' ' + calTime.fullTime}</span>
 			</div>
 			<div className='sub'>
-				<UserBox user_id={user_id!} />
+				<UserBox user_id={user_id} />
 			</div>
 		</Title>
 	);

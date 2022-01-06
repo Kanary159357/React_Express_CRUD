@@ -1,25 +1,25 @@
 import { GetServerSidePropsContext } from 'next';
 import { Store } from 'redux';
 import { loginProcess } from '../store/authSlice';
-import { http } from './serverLessAPI';
+
+import { API } from './serverLessAPI';
 
 export const authSSR = async (
 	context: GetServerSidePropsContext,
 	store: Store
 ) => {
 	try {
-		const refreshResp = await http.get('/api/refresh', {
-			headers: context.req.headers,
+		const { data } = await API.get('/refresh', {
+			headers: { cookie: context.req.headers.cookie },
 		});
-		const { username, id, accessToken } = refreshResp.data;
-		const bearer = `Bearer ${accessToken}`;
-		http.defaults.headers.Authorization = bearer;
+		const { username, id, accessToken } = data;
+		const bearer = `Bearer ${accessToken as string}`;
 		store.dispatch(
 			loginProcess({ userData: { id, username }, isLogin: true, accessToken })
 		);
+		API.defaults.headers.Authorization = bearer;
 		return { success: true, accessToken, username, id };
 	} catch (e) {
-		console.log(e);
 		return { success: false, error: e };
 	}
 };

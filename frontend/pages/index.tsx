@@ -6,6 +6,7 @@ import { wrapper } from '../lib/store';
 
 import { GetServerSideProps } from 'next';
 import { authSSR } from '../lib/utils/authSSR';
+import axios from 'axios';
 
 const Content = styled.div`
 	display: flex;
@@ -20,7 +21,12 @@ const Title = styled.div`
 
 export const getServerSideProps: GetServerSideProps =
 	wrapper.getServerSideProps((store) => async (context) => {
-		const authResult = await authSSR(context, store);
+		try {
+			await authSSR(context, store);
+		} catch (e) {
+			if (axios.isAxiosError(e)) {
+			}
+		}
 		return {
 			props: {},
 		};

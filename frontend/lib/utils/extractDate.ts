@@ -1,5 +1,4 @@
 const extractDate = (date: Date) => {
-	console.log(date);
 	const data = {
 		year: date.getUTCFullYear(),
 		date: date.getDate(),

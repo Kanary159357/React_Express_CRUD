@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import React, { Ref } from 'react';
+import React, { ForwardedRef } from 'react';
 import UserBox from './UserBox';
+import { PostPreview } from '../lib/types/Post';
 
 const Wrapper = styled.div`
 	padding: 30px 0;
@@ -66,7 +67,7 @@ const Description = styled.div`
 `;
 
 const ArticleItem = React.forwardRef(
-	({ post }: { post: PostPreview }, ref: any) => {
+	({ post }: { post: PostPreview }, ref: ForwardedRef<HTMLDivElement>) => {
 		const { id, user_id, created_at, preview_text, title } = post;
 		const date = created_at.toString().split('T')[0];
 		return (

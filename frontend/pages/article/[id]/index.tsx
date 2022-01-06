@@ -5,13 +5,14 @@ import styled from 'styled-components';
 import MainLayout from '../../../Layout/MainLayout';
 import Link from 'next/link';
 import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
-import API from '../../../lib/utils/api';
+import { API } from '../../../lib/utils/serverLessAPI';
 import dynamic from 'next/dynamic';
 import { useSelector } from 'react-redux';
 import { AppState, wrapper } from '../../../lib/store';
 import { GetServerSidePropsContext } from 'next';
 import { authSSR } from '../../../lib/utils/authSSR';
 import { getPost } from '../../../lib/services/PostService';
+import { Post } from '../../../lib/types/Post';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -29,8 +30,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			await queryClient.prefetchQuery('post', () =>
 				getPost(params!.id as string)
 			);
-			const result = queryClient.getQueryData<any>('post');
-			if (!result.length) {
+			const result = queryClient.getQueryData<Post>('post');
+			if (!result) {
 				return {
 					redirect: {
 						permanent: false,
@@ -54,12 +55,12 @@ const Editor = dynamic(() => import('../../../component/RichEditor'), {
 const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	const { data } = useQuery('post', () => getPost(id as string));
+	const { data } = useQuery<Post>('post', () => getPost(id as string));
 	const userData = useSelector((state: AppState) => state.authReducer.userData);
 	const user_id = userData ? userData.id : null;
 	const post: { title: string; content: Descendant[] } = {
-		title: data[0].title,
-		content: data[0].content,
+		title: data!.title,
+		content: data!.content,
 	};
 	const deleteMutation = useMutation(
 		(id: string) => API.delete(`/article/${id}`),
@@ -77,14 +78,14 @@ const Article = () => {
 					<Editor
 						readOnly
 						post={post}
-						created_at={data[0].created_at}
-						title={data[0].title}
-						user_id={data[0].user_id}
+						created_at={data.created_at}
+						title={data.title}
+						user_id={data.user_id}
 					/>
-					{user_id == data[0].user_id && (
+					{user_id == data.user_id && (
 						<ControlDiv>
 							<Button>
-								<Link href={`/article/${id}/edit`}>
+								<Link href={`/article/${id as string}/edit`}>
 									<a>수정</a>
 								</Link>
 							</Button>

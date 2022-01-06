@@ -7,8 +7,7 @@ import { Button } from 'antd';
 import { Descendant } from 'slate';
 
 import { useMutation } from 'react-query';
-import { useRouter } from 'next/dist/client/router';
-import { AxiosError } from 'axios';
+
 import { writePost } from '../lib/services/PostService';
 
 const ControlDiv = styled.div`
@@ -33,7 +32,6 @@ export interface TitleAndDescription {
 	content: Descendant[];
 }
 const Write = () => {
-	const router = useRouter();
 	const [post, setPost] = useState<TitleAndDescription>({
 		title: '',
 		content: initialValue,
@@ -43,11 +41,10 @@ const Write = () => {
 		({ post }: { post: TitleAndDescription }) => writePost(post),
 		{
 			onSuccess: () => {
-				router.push(`/`);
+				alert('success');
 			},
-			onError: (e: AxiosError) => {
-				alert('에러가 발생했습니다');
-				console.log(e.message);
+			onError: () => {
+				alert('업로드 실패');
 			},
 		}
 	);

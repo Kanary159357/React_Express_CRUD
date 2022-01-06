@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Editable, withReact, Slate } from 'slate-react';
-import { createEditor, Descendant, Element as SlateElement } from 'slate';
+import { createEditor, Descendant } from 'slate';
 import { withHistory } from 'slate-history';
 
 import styled from 'styled-components';
@@ -54,7 +54,7 @@ const RichEditor = ({
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
-		setPost!({ ...post!, title: value });
+		setPost?.({ ...post!, title: value });
 	};
 	const EditorChange = (text: Descendant[]) => {
 		if (readOnly) {

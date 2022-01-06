@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import { http } from '../utils/serverLessAPI';
 import { store } from '../store';
@@ -23,12 +23,12 @@ export const login = async (values: { id: string; password: string }) => {
 	);
 	return data;
 };
-export const logout = async () => await http.delete('/api/logout');
+export const logout = () => http.delete('/api/logout');
 export const signup = async (content: InputProps) =>
 	await http.post('/api/signup', content);
 
 export const signupCheckId = async (id: string) => {
-	const { data }: AxiosResponse<any> = await http.get(`/api/signup/${id}`);
+	const { data } = await http.get<boolean>(`/api/signup/${id}`);
 	return data;
 };
 export function useLogoutMutation() {

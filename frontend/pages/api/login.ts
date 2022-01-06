@@ -1,15 +1,24 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import API from '../../lib/utils/api';
+import { API } from '../../lib/utils/serverLessAPI';
+
+interface LoginProps {
+	success: boolean;
+	token: string;
+	id: string;
+	username: string;
+}
+
+type HeaderProps = { [key: string]: string };
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
+	const { method, headers } = req;
 	if (method === 'POST') {
 		try {
-			const { data, headers: returnedHeaders } = await API.post('/login', body);
-			Object.keys(returnedHeaders).forEach((key) =>
-				res.setHeader(key, returnedHeaders[key])
-			);
+			const resp = await API.post<LoginProps>('/login', req.body);
+			const { data } = resp;
+			const headers = resp.headers as HeaderProps;
+			Object.keys(headers).forEach((key) => res.setHeader(key, headers[key]));
 			res.status(200).json(data);
 		} catch (e) {
 			if (axios.isAxiosError(e)) {
@@ -20,7 +29,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	if (method === 'GET') {
 		try {
-			const { data } = await API.get('/login', {
+			const { data } = await API.get<Omit<LoginProps, 'token'>>('/login', {
 				headers,
 			});
 

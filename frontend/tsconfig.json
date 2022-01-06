@@ -4,7 +4,6 @@
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"downlevelIteration": true,
-
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
@@ -15,6 +14,10 @@
 		"module": "esnext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true
+	},
+	"rules": {
+		"no-non-null-assertion": "off",
+		"no-floating-promises": "off"
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]

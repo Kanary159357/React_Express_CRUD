@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import API from '../../../lib/utils/api';
+import { API } from '../../../lib/utils/serverLessAPI';
 
 const signup = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { method, headers, body } = req;

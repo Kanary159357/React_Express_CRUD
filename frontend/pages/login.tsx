@@ -58,10 +58,9 @@ const Login = () => {
 			login({ id, password }),
 		{
 			onSuccess: (variables) => {
-				const { username, success, id, token: accessToken } = variables!;
+				const { username, success, id, token: accessToken } = variables;
 				if (success) {
-					console.log(username, success, accessToken);
-					const bearer = `Bearer ${accessToken}`;
+					const bearer = `Bearer ${accessToken as string}`;
 					http.defaults.headers.Authorization = bearer;
 					dispatch(
 						loginProcess({
@@ -80,7 +79,7 @@ const Login = () => {
 			},
 		}
 	);
-	const onFinish = async () => {
+	const onFinish = () => {
 		const id = inputRef.current['id']!.value;
 		const password = inputRef.current['password']!.value;
 		loginMutation.mutate({ id, password });

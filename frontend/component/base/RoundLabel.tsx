@@ -24,7 +24,7 @@ interface RoundLabelProps {
 	background: string;
 	fontColor: string;
 	children: ReactChild | ReactChildren;
-	onClick: Function;
+	onClick: () => void;
 }
 
 type Props = Partial<RoundLabelProps>;

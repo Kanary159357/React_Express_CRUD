@@ -1,18 +1,13 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import ArticleItem from './ArticleItem';
-import { Input } from 'antd';
-import MainLayout from '../Layout/MainLayout';
+
 import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
 import React, { useRef, useState } from 'react';
-import {
-	getPosts,
-	makeGetPostsFn,
-	queryObject,
-} from '../lib/services/PostService';
+import { makeGetPostsFn, queryObject } from '../lib/services/PostService';
 import { useInfiniteQuery } from 'react-query';
-import { useEffect } from 'react';
 import SkeletonBox from './Skeleton/SkeletonBox';
+import { GetPosts } from '../lib/types/Post';
 
 const Wrapper = styled.div`
 	width: 626px;
@@ -82,12 +77,12 @@ type orderProps = 'asc' | 'desc';
 const ArticleList = ({ query }: { query?: queryObject }) => {
 	const scrollRef = useRef(null);
 	const [order, setOrder] = useState<orderProps>('desc');
-	const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
+	const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
 		useInfiniteQuery<GetPosts>(
 			['postsList', query, order],
 			makeGetPostsFn({ ...query!, order }),
 			{
-				getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+				getNextPageParam: (lastPage) => lastPage.nextCursor,
 			}
 		);
 	const onOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -115,7 +110,7 @@ const ArticleList = ({ query }: { query?: queryObject }) => {
 					<EmptyBox>Empty!</EmptyBox>
 				) : (
 					data?.pages.map((page) =>
-						page.posts.map((item, i) =>
+						page.posts?.map((item, i) =>
 							i !== page.posts.length - 1 ? (
 								<ArticleItem key={item.id} post={item} />
 							) : (

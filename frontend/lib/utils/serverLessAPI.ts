@@ -27,15 +27,18 @@ createAuthRefreshInterceptor(http, (failedRequest) =>
 				return;
 			}
 			const { accessToken } = resp.data;
-			const bearer = `Bearer ${accessToken}`;
+			const bearer = `Bearer ${accessToken as string}`;
 			http.defaults.headers.Authorization = bearer;
 			store.dispatch(updateAccessToken({ token: accessToken }));
 			failedRequest.response.config.headers.Authorization = bearer;
-
 			return Promise.resolve();
 		})
 		.catch((e) => {
-			alert(e);
-			alert('다시 로그인해주세요');
+			alert('안녕');
 		})
 );
+
+export const API = axios.create({
+	baseURL: 'https://aby5gwn2bi.execute-api.us-west-2.amazonaws.com/dev',
+	withCredentials: true,
+});

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { AxiosResponse } from 'axios';
 import { TitleAndDescription } from '../../pages/write';
 import { http } from '../utils/serverLessAPI';
@@ -5,8 +6,7 @@ import { serialize } from '../utils/slateFn';
 
 export const getPost = async (id: string) => {
 	try {
-		const { data }: AxiosResponse<any> = await http.get(`/api/article/${id}`);
-		console.log(data);
+		const { data }: AxiosResponse<Post> = await http.get(`/api/article/${id}`);
 		return data;
 	} catch (err) {
 		if (err instanceof Error) {
@@ -40,20 +40,13 @@ export const makeGetPostsFn = (query: queryObject) => {
 	};
 };
 
-export const getMyPosts = async () => {
-	try {
-		const resp = await http.get('/api/mypage');
-		return resp.data;
-	} catch (e) {
-		console.error(e);
-	}
-};
-export const writePost = (post: TitleAndDescription) =>
-	http.post('/write', {
+export const writePost = (post: TitleAndDescription) => {
+	return http.post('/api/write', {
 		preview: serialize(post.content).substring(0, 200),
 		title: post.title,
 		content: JSON.stringify(post.content),
 	});
+};
 
 export const editPost = async ({
 	id,
@@ -62,7 +55,7 @@ export const editPost = async ({
 	id: string | string[] | undefined;
 	post: TitleAndDescription;
 }) => {
-	await http.post(`/api/article/${id}`, {
+	await http.post(`/api/article/${id as string}`, {
 		preview_text: serialize(post.content).substring(0, 200),
 		title: post.title,
 		content: JSON.stringify(post.content),
