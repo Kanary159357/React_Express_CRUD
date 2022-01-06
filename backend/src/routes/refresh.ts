@@ -11,15 +11,21 @@ router.get(
 	asyncWrap(async (req: Request, res: Response) => {
 		const headers = req.headers;
 		if (!headers.cookie) {
-			return res.status(403).send('No Cookie');
+			return res.status(401).send('No Cookie');
 		}
-		const parsedCookie = parse(headers.cookie);
-		const refreshToken = parsedCookie["'refreshToken"].replace("'", '');
+		const parsedCookie = parse(headers.cookie)['refreshToken'];
+		if (!parsedCookie) {
+			return res.status(401).send({
+				cookie: headers.cookie,
+				noparsed: parsedCookie['refreshToken'],
+			});
+		}
+		const refreshToken = parsedCookie;
 		if (!refreshToken) {
 			console.log('No Refresh Token');
-			return res.status(403).send({
+			return res.status(401).send({
 				cookie: headers.cookie,
-				setter: parsedCookie["'refreshToken"],
+				setter: parsedCookie['refreshToken'],
 			});
 		}
 
@@ -32,7 +38,7 @@ router.get(
 				decodedId
 			);
 			if (!refreshResult.ok) {
-				return res.status(405).send('expired ');
+				return res.status(405).send({ refreshToken, decodedId, refreshResult });
 			} else {
 				const newToken = getNewAccessToken(decodedId);
 				return res.json({

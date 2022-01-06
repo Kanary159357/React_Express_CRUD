@@ -7,12 +7,17 @@ const verifyToken = (req: Request, res: Response, next: Function) => {
 	if (!authHeader) {
 		return res.status(401).send('No authHeader');
 	}
+	const token = authHeader.replace(/'/g, ' ').trim().split(' ')[1];
+
 	try {
-		const token = authHeader.split(' ')[1];
 		const decoded = verify(token, process.env.TOKEN_SECRET);
 		req.user = decoded as AccessTokenType;
 	} catch (err) {
-		return res.status(401).send('Invalid Token');
+		return res.status(401).send({
+			authHeader,
+			token,
+			err,
+		});
 	}
 	return next();
 };

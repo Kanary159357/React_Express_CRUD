@@ -5,7 +5,7 @@ import { AccessTokenType } from '../types/TokenType';
 require('dotenv').config();
 
 export const getNewAccessToken = (id: string) => {
-	return sign({ id }, process.env.TOKEN_SECRET, { expiresIn: '5s' });
+	return sign({ id }, process.env.TOKEN_SECRET, { expiresIn: '60s' });
 };
 
 export const getVerifiedToken = (token: string) => {
@@ -31,9 +31,9 @@ export const getVerifiedRefreshToken = async (token: string, id: string) => {
 		if (token === data) {
 			return getVerifiedToken(token);
 		} else {
-			return { ok: false };
+			return { ok: false, id, token, data };
 		}
 	} catch (err) {
-		return { ok: false };
+		return { ok: false, err };
 	}
 };

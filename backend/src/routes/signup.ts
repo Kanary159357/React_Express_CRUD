@@ -38,7 +38,7 @@ router.get(
 			const [rows] = await database.query(
 				`SELECT count(id) as cnt FROM users WHERE id='${id}';`
 			);
-			res.send(rows);
+			res.send({ available: Boolean(rows[0].cnt) });
 		} catch (e) {
 			res.status(400).send('실패데수네~');
 		}

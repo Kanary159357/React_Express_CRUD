@@ -15,7 +15,7 @@ const verifyRefeshToken = async (
 	next: Function
 ) => {
 	if (!req.headers.authorization || !req.headers.refresh) {
-		return res.status(403).send('No authHeader');
+		return res.status(401).send('No authHeader');
 	}
 	try {
 		const token = req.headers.authorization.split(' ')[1];

@@ -28,7 +28,9 @@ router.get(
 				? query.reduce((acc, cur, i) => {
 						const [k, v] = cur;
 						let str = '';
-						if (order === 'asc') {
+						if (k == 'user_id') {
+							str = `${k}='${v}'`;
+						} else if (order === 'asc') {
 							str = `${k}>${v}`;
 						} else {
 							str = `${k}<${v}`;
@@ -42,19 +44,23 @@ router.get(
 
 		const MinMaxQuery = baseMinMaxQuery + whereQuery;
 		const PostQuery = basePostQuery + whereQuery + orderQuery;
-		const [minmaxRows] = await database.query<Post[]>(MinMaxQuery);
-		const { min, max } = minmaxRows[0];
-		const [rows] = await database.query<Post[]>(PostQuery);
-		const nextCursor =
-			rows.length == 0
-				? undefined
-				: order === 'desc'
-				? rows[rows.length - 1].id > min && rows[rows.length - 1].id
-				: rows[rows.length - 1].id < max && rows[rows.length - 1].id;
-		res.send({
-			posts: rows,
-			nextCursor,
-		});
+		try {
+			const [minmaxRows] = await database.query<Post[]>(MinMaxQuery);
+			const { min, max } = minmaxRows[0];
+			const [rows] = await database.query<Post[]>(PostQuery);
+			const nextCursor =
+				rows.length == 0
+					? undefined
+					: order === 'desc'
+					? rows[rows.length - 1].id > min && rows[rows.length - 1].id
+					: rows[rows.length - 1].id < max && rows[rows.length - 1].id;
+			res.send({
+				posts: rows,
+				nextCursor,
+			});
+		} catch (e) {
+			res.send({ message: PostQuery });
+		}
 	})
 );
 

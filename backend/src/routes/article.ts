@@ -19,7 +19,7 @@ router.get(
 			const [row] = await database.query(
 				`SELECT * FROM POSTS WHERE ID = ${id};`
 			);
-			res.send(row);
+			res.send(row[0]);
 		} catch (e) {
 			console.log(e);
 			res.status(400).send('실패데수네~');

@@ -13,9 +13,20 @@ import account from './routes/account';
 import path = require('path');
 
 const app: express.Application = express();
+app.use(function (req, res, next) {
+	// Website you wish to allow to connect
+	res.setHeader('Access-Control-Allow-Origin', '*');
 
+	res.setHeader(
+		'Access-Control-Allow-Methods',
+		'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+	);
+	// Request headers you wish to allow
+	res.setHeader('Access-Control-Allow-Headers', '*');
+
+	next();
+});
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 

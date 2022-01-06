@@ -14,7 +14,7 @@ router.get(
 			const [rows]: [any, FieldPacket[]] = await database.query<any>(
 				`SELECT id, username, registration_date  FROM users WHERE id='${req.user.id}'`
 			);
-			return res.send(rows);
+			return res.send(rows[0]);
 		} catch (e) {
 			return res.status(401).send('Error');
 		}
