@@ -48,6 +48,7 @@ createAuthRefreshInterceptor(http, (failedRequest) =>
 		.catch((e) => {
 			if (e instanceof Error) {
 				console.error(e);
+				alert('다시 로그인해주세요');
 			}
 		})
 );

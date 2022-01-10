@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect } from 'react';
 
 function useIntersectionObserver(
-	target: MutableRefObject<null>,
+	target: MutableRefObject<Element | null>,
 	fn: () => unknown
 ) {
 	useEffect(() => {

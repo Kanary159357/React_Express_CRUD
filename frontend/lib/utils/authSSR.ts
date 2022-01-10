@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import { Store } from 'redux';
 import { loginProcess } from '../store/authSlice';
@@ -21,7 +22,9 @@ export const authSSR = async (
 		context.req.headers.authorization = bearer;
 		return { success: true, accessToken, username, id };
 	} catch (e) {
-		if (e instanceof Error) {
+		if (axios.isAxiosError(e)) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			console.error(e.response?.data?.error);
 			return { success: false, error: e };
 		}
 	}
