@@ -32,10 +32,9 @@ const EditorDiv = styled.div`
 `;
 
 interface RichEditorProps {
-	readOnly?: boolean;
+	readOnly: boolean;
 	title?: string;
-	text?: Descendant[];
-	post?: TitleAndDescription;
+	post: TitleAndDescription;
 	user_id?: string;
 	created_at?: Date;
 	setPost?: (text: TitleAndDescription) => void;
@@ -43,7 +42,6 @@ interface RichEditorProps {
 
 const RichEditor = ({
 	readOnly = false,
-	text,
 	title,
 	user_id,
 	created_at,
@@ -59,9 +57,8 @@ const RichEditor = ({
 		}
 	};
 	const EditorChange = (text: Descendant[]) => {
-		if (readOnly) {
-		} else {
-			setPost && setPost({ ...post!, content: text });
+		if (!readOnly) {
+			setPost && setPost({ ...post, content: text });
 		}
 	};
 	return (
@@ -70,12 +67,12 @@ const RichEditor = ({
 				<>
 					{readOnly ? (
 						<TitleView
-							title={title!}
-							created_at={created_at!}
-							user_id={user_id!}></TitleView>
+							title={title ?? ''}
+							created_at={created_at ?? new Date()}
+							user_id={user_id ?? ''}></TitleView>
 					) : (
 						<TitleInput
-							value={post!.title}
+							value={post.title}
 							name={'title'}
 							onChange={onChange}
 							placeholder='제목을 입력해주세요..'
@@ -85,7 +82,7 @@ const RichEditor = ({
 				<EditorDiv>
 					<Slate
 						editor={editor}
-						value={text || post!.content!}
+						value={post.content ?? []}
 						onChange={EditorChange}>
 						<Editable
 							readOnly={readOnly}

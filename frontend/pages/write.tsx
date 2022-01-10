@@ -36,7 +36,7 @@ const Write = () => {
 	const mutation = usePostAddMutation();
 	return (
 		<MainLayout>
-			<Editor post={post} setPost={setPost} />
+			<Editor post={post} setPost={setPost} readOnly={false} />
 			<ControlDiv>
 				<Button
 					onClick={() => {

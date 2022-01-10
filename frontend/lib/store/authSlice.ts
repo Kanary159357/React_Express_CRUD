@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 export interface AuthState {
 	isLogin: boolean;
@@ -32,6 +33,15 @@ export const authSlice = createSlice({
 		},
 		updateAccessToken: (state, action: PayloadAction<{ token: string }>) => {
 			state.accessToken = action.payload.token;
+		},
+	},
+	extraReducers: {
+		[HYDRATE]: (state, action: PayloadAction<{ authReducer: AuthState }>) => {
+			const temp = {
+				...state,
+				authReducer: action.payload.authReducer,
+			};
+			return temp;
 		},
 	},
 });

@@ -69,7 +69,7 @@ const Edit = () => {
 	return (
 		<MainLayout>
 			<Wrapper>
-				{data && <Editor post={post} setPost={setPost} />}
+				{data && <Editor post={post} setPost={setPost} readOnly={false} />}
 				<ControlDiv>
 					<Button onClick={() => editMutation.mutate({ id, post })}>
 						작성

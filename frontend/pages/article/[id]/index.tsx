@@ -12,6 +12,7 @@ import { getPost } from '../../../lib/services/PostService';
 import { Post } from '../../../lib/types/Post';
 import { getServerArticle } from '../../api/article/[id]';
 import usePostDeleteMutation from '../../../lib/query/post/usePostDeleteMutation';
+import SkeletonPost from '../../../component/Skeleton/SkeletonPost';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -20,6 +21,12 @@ const ControlDiv = styled.div`
 	margin-top: -30px;
 `;
 
+const Editor = dynamic(() => import('../../../component/RichEditor'), {
+	ssr: false,
+	loading: function EditorLoadComponent() {
+		return <SkeletonPost />;
+	},
+});
 export const getServerSideProps = wrapper.getServerSideProps(
 	() => async (context: GetServerSidePropsContext) => {
 		const { params } = context;
@@ -39,10 +46,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 	}
 );
 
-const Editor = dynamic(() => import('../../../component/RichEditor'), {
-	ssr: false,
-});
-
 const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
@@ -54,16 +57,18 @@ const Article = () => {
 		<>
 			{data && (
 				<MainLayout>
-					<Editor
-						readOnly
-						post={{
-							title: data.title,
-							content: data.content,
-						}}
-						created_at={data.created_at}
-						title={data.title}
-						user_id={data.user_id}
-					/>
+					{
+						<Editor
+							readOnly
+							post={{
+								title: data.title,
+								content: data.content,
+							}}
+							created_at={data.created_at}
+							title={data.title}
+							user_id={data.user_id}
+						/>
+					}
 					{user_id == data.user_id && (
 						<ControlDiv>
 							<Button>

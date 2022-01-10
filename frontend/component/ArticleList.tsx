@@ -8,6 +8,7 @@ import { QueryObject } from '../lib/services/PostService';
 import SkeletonBox from './Skeleton/SkeletonBox';
 
 import usePostsListQuery from '../lib/query/post/usePostsListQuery';
+import SkeletonPostItem from './Skeleton/SkeletonPostItem';
 
 const Wrapper = styled.div`
 	width: 626px;
@@ -61,17 +62,6 @@ const EmptyBox = styled.div`
 	font-size: 30px;
 `;
 
-const SkeletonItem = styled.div`
-	height: 215px;
-	padding: 30px 0px;
-
-	div {
-		margin-bottom: 20px;
-	}
-	border-bottom: 1px solid ${Palette.gray_4};
-	margin-bottom: -1px;
-`;
-
 export type OrderProps = 'asc' | 'desc';
 
 const ArticleList = ({ query }: { query?: QueryObject }) => {
@@ -94,13 +84,7 @@ const ArticleList = ({ query }: { query?: QueryObject }) => {
 			</ListControlBox>
 			<ContentBox>
 				{!data || isError ? (
-					new Array(4).fill(1).map((_, i) => (
-						<SkeletonItem key={i}>
-							<SkeletonBox height={'20px'} width={'300px'} />
-							<SkeletonBox height={'20px'} width={'300px'} />
-							<SkeletonBox height={'20px'} width={'300px'} />
-						</SkeletonItem>
-					))
+					new Array(4).fill(1).map((_, i) => <SkeletonPostItem key={i} />)
 				) : data?.pages[0].posts.length == 0 ? (
 					<EmptyBox>Empty!</EmptyBox>
 				) : (
@@ -115,13 +99,7 @@ const ArticleList = ({ query }: { query?: QueryObject }) => {
 					)
 				)}
 				{isFetchingNextPage &&
-					new Array(4).fill(1).map((_, i) => (
-						<SkeletonItem key={i}>
-							<SkeletonBox height={'20px'} width={'300px'} />
-							<SkeletonBox height={'20px'} width={'300px'} />
-							<SkeletonBox height={'20px'} width={'300px'} />
-						</SkeletonItem>
-					))}
+					new Array(4).fill(1).map((_, i) => <SkeletonPostItem key={i} />)}
 			</ContentBox>
 		</Wrapper>
 	);
