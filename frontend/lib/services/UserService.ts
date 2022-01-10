@@ -1,9 +1,9 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import { http } from '../utils/serverLessAPI';
 import { store } from '../store';
 import { logoutProcess } from '../store/authSlice';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 export interface UserAuthProps {
 	success: boolean;
@@ -32,10 +32,11 @@ export const signupCheckId = async (id: string) => {
 	return data;
 };
 export function useLogoutMutation() {
+	const router = useRouter();
 	return useMutation(logout, {
 		onSuccess: () => {
 			store.dispatch(logoutProcess());
-			Router.push('/');
+			router.push('/');
 		},
 		onError: () => {
 			alert('에러가 발생했습니다');

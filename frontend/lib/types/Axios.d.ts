@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
 import { NextApiRequest } from 'next';
 
 export interface baseAPIResponse {

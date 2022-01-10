@@ -8,13 +8,12 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { Button } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { getPost } from '../../../lib/services/PostService';
-import { GetServerSideProps, NextApiRequest } from 'next';
+import { GetServerSideProps } from 'next';
 import { wrapper } from '../../../lib/store';
 import { authSSR } from '../../../lib/utils/authSSR';
 import { Post } from '../../../lib/types/Post';
 import { getServerArticle } from '../../api/article/[id]';
 import usePostEditMutation from '../../../lib/query/post/usePostEditMutation';
-import { NextApiRequestWithAuthHeader } from '../../../lib/types/Axios';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
