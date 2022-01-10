@@ -4,12 +4,17 @@ import database from '../config/database';
 
 import { Request, Response } from 'express';
 import { hash } from 'bcryptjs';
+import { RowDataPacket } from 'mysql2';
 const router = Router();
 
 interface InputProps {
 	id: string;
 	password: string;
 	username: string;
+}
+
+interface CountProps extends RowDataPacket {
+	cnt: number;
 }
 
 router.post(
@@ -24,9 +29,9 @@ router.post(
 			await database.query(
 				`INSERT INTO users values ('${id}', '${encryptPassword}', '${username}', '${formattedDate}');`
 			);
-			res.send('Successfully registered');
+			res.send({ message: 'Successfully registered' });
 		} catch (e) {
-			res.status(400).send('실패데수네~');
+			res.status(400).send({ message: 'Registeration Fail', error: e });
 		}
 	})
 );
@@ -35,12 +40,12 @@ router.get(
 	asyncWrap(async (req: Request<InputProps>, res: Response) => {
 		const id = req.params.id;
 		try {
-			const [rows] = await database.query(
+			const [rows] = await database.query<CountProps[]>(
 				`SELECT count(id) as cnt FROM users WHERE id='${id}';`
 			);
 			res.send({ available: Boolean(rows[0].cnt) });
 		} catch (e) {
-			res.status(400).send('실패데수네~');
+			res.status(400).send({ error: e, message: 'getCoundId Fail' });
 		}
 	})
 );

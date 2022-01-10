@@ -1,18 +1,17 @@
 import { Button } from 'antd';
 import { useRouter } from 'next/dist/client/router';
-import { Descendant } from 'slate';
 import styled from 'styled-components';
 import MainLayout from '../../../Layout/MainLayout';
 import Link from 'next/link';
-import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
-import { API } from '../../../lib/utils/serverLessAPI';
+import { dehydrate, QueryClient, useQuery } from 'react-query';
 import dynamic from 'next/dynamic';
 import { useSelector } from 'react-redux';
 import { AppState, wrapper } from '../../../lib/store';
 import { GetServerSidePropsContext } from 'next';
-import { authSSR } from '../../../lib/utils/authSSR';
 import { getPost } from '../../../lib/services/PostService';
 import { Post } from '../../../lib/types/Post';
+import { getServerArticle } from '../../api/article/[id]';
+import usePostDeleteMutation from '../../../lib/query/post/usePostDeleteMutation';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -22,23 +21,15 @@ const ControlDiv = styled.div`
 `;
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	(store) => async (context: GetServerSidePropsContext) => {
-		const authResult = await authSSR(context, store);
+	() => async (context: GetServerSidePropsContext) => {
 		const { params } = context;
 		const queryClient = new QueryClient();
+		const customReq = { query: { id: params?.id || '' } };
 		try {
-			await queryClient.prefetchQuery('post', () =>
-				getPost(params!.id as string)
-			);
-			const result = queryClient.getQueryData<Post>('post');
-			if (!result) {
-				return {
-					redirect: {
-						permanent: false,
-						destination: '/404',
-					},
-				};
-			}
+			await queryClient.prefetchQuery('post', async () => {
+				const { data } = await getServerArticle(customReq);
+				return data;
+			});
 		} catch (e) {}
 		return {
 			props: {
@@ -58,26 +49,17 @@ const Article = () => {
 	const { data } = useQuery<Post>('post', () => getPost(id as string));
 	const userData = useSelector((state: AppState) => state.authReducer.userData);
 	const user_id = userData ? userData.id : null;
-	const post: { title: string; content: Descendant[] } = {
-		title: data!.title,
-		content: data!.content,
-	};
-	const deleteMutation = useMutation(
-		(id: string) => API.delete(`/article/${id}`),
-		{
-			onSuccess: () => {
-				router.push('/');
-			},
-		}
-	);
-
+	const deleteMutation = usePostDeleteMutation();
 	return (
 		<>
 			{data && (
 				<MainLayout>
 					<Editor
 						readOnly
-						post={post}
+						post={{
+							title: data.title,
+							content: data.content,
+						}}
 						created_at={data.created_at}
 						title={data.title}
 						user_id={data.user_id}

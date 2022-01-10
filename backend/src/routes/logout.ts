@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express';
 import { asyncWrap } from '../utils/asyncWrapper';
-import { parse } from 'cookie';
 import redisClient from '../config/redis';
 import verifyToken from '../middleware/verifyToken';
 import { promisify } from 'util';
@@ -14,9 +13,9 @@ router.delete(
 
 		try {
 			await delAsync(req.user.id);
-			return res.send('Logout');
+			return res.send({ message: 'Logout Success' });
 		} catch (e) {
-			return res.status(404).send('logout Failed');
+			return res.status(404).send({ message: 'Logout Failed' });
 		}
 	})
 );

@@ -61,7 +61,11 @@ const Login = () => {
 				const { username, success, id, token: accessToken } = variables;
 				if (success) {
 					const bearer = `Bearer ${accessToken as string}`;
-					http.defaults.headers.Authorization = bearer;
+					if (http.defaults.headers) {
+						http.defaults.headers.Authorization = bearer;
+					} else {
+						console.error('No http default header');
+					}
 					dispatch(
 						loginProcess({
 							userData: { id, username },
@@ -69,7 +73,7 @@ const Login = () => {
 							isLogin: true,
 						})
 					);
-					router.push('/');
+					void router.push('/');
 				} else {
 					alert('그런 계정은 없답니다~');
 				}
@@ -80,9 +84,13 @@ const Login = () => {
 		}
 	);
 	const onFinish = () => {
-		const id = inputRef.current['id']!.value;
-		const password = inputRef.current['password']!.value;
-		loginMutation.mutate({ id, password });
+		if (inputRef.current['id'] && inputRef.current['password']) {
+			const id = inputRef.current['id'].value;
+			const password = inputRef.current['password'].value;
+			loginMutation.mutate({ id, password });
+		} else {
+			console.error('No inputRef!');
+		}
 	};
 
 	return (

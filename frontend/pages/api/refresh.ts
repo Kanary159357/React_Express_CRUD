@@ -1,13 +1,7 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { RefreshTokenProps } from '../../lib/types/Axios';
 import { API } from '../../lib/utils/serverLessAPI';
-
-interface RefreshTokenProps {
-	success: boolean;
-	accessToken: string;
-	id: string;
-	username: string;
-}
 
 const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { headers } = req;
@@ -20,7 +14,9 @@ const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json(data);
 	} catch (e) {
 		if (axios.isAxiosError(e)) {
-			res.status(404).send(headers.cookie);
+			if (e.response) {
+				res.status(e.response.status).send(e.response.data);
+			}
 		}
 	}
 };

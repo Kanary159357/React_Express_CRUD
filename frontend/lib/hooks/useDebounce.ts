@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-export function useDebounce<T>(value: T, delay = 200) {
+export const useDebounce = <T>(value: T, delay = 200) => {
 	const [dValue, setDValue] = useState<T>(value);
 	const [debounceLoading, setDebounceLoading] = useState(false);
 	const didMount = useRef(false);
@@ -21,4 +21,4 @@ export function useDebounce<T>(value: T, delay = 200) {
 	}, [delay, value]);
 
 	return { dValue, debounceLoading };
-}
+};

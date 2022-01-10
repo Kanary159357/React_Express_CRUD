@@ -3,7 +3,7 @@ import database from '../config/database';
 import * as jwt from 'jsonwebtoken';
 import * as cookie from 'cookie';
 import { asyncWrap } from '../utils/asyncWrapper';
-import { FieldPacket, RowDataPacket } from 'mysql2';
+import { RowDataPacket } from 'mysql2';
 import redisClient from '../config/redis';
 import { getNewAccessToken } from '../utils/jwt-utils';
 import verifyToken from '../middleware/verifyToken';
@@ -21,11 +21,13 @@ router.get(
 	verifyToken,
 	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
 		try {
-			const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
-				UserQueryProps[]
-			>(`SELECT id, username FROM users WHERE id='${req.user.id}'`);
+			const [rows] = await database.query<UserQueryProps[]>(
+				`SELECT id, username FROM users WHERE id='${req.user.id}'`
+			);
 			if (!rows.length) {
-				return res.json({ success: false });
+				return res
+					.status(404)
+					.send({ success: false, message: 'getUser failed' });
 			} else {
 				return res.send({
 					success: true,
@@ -34,7 +36,7 @@ router.get(
 				});
 			}
 		} catch {
-			res.status(404).send({ success: false });
+			res.status(404).send({ success: false, message: 'getUser failed' });
 		}
 	})
 );
@@ -43,17 +45,20 @@ router.post(
 	'/',
 	asyncWrap(async (req: Request<UserQueryProps>, res: Response) => {
 		try {
-			const [rows]: [UserQueryProps[], FieldPacket[]] = await database.query<
-				UserQueryProps[]
-			>(`SELECT id, username, password FROM users WHERE id='${req.body.id}'`);
+			const [rows] = await database.query<UserQueryProps[]>(
+				`SELECT id, username, password FROM users WHERE id='${req.body.id}'`
+			);
 
-			if (!rows.length || !rows[0]) return res.json({ success: false });
+			if (!rows.length || !rows[0])
+				return res
+					.status(400)
+					.send({ success: false, message: 'Login failed' });
 			const comparison = await compare(req.body.password, rows[0].password);
 			if (!comparison) {
 				return res.json({ success: false });
 			} else {
-				let accesstoken = getNewAccessToken(rows[0].id);
-				let refreshToken = jwt.sign(
+				const accesstoken = getNewAccessToken(rows[0].id);
+				const refreshToken = jwt.sign(
 					{ id: rows[0].id, username: rows[0].username },
 					process.env.TOKEN_SECRET,
 					{
@@ -64,12 +69,14 @@ router.post(
 				redisClient.set(rows[0].id, refreshToken);
 				redisClient.expire(rows[0].id, 60 * 60 * 24 * 7);
 				res.header({
-					'Set-Cookie': cookie.serialize('refreshToken', refreshToken, {
-						httpOnly: true,
-						maxAge: 60 * 60 * 24 * 7, // 7 days
-						sameSite: true,
-						path: '/',
-					}),
+					'Set-Cookie': [
+						cookie.serialize('refreshToken', refreshToken, {
+							httpOnly: true,
+							maxAge: 60 * 60 * 24 * 7, // 7 days
+							sameSite: true,
+							path: '/',
+						}),
+					],
 				});
 				return res.send({
 					success: true,
@@ -79,7 +86,7 @@ router.post(
 				});
 			}
 		} catch (e) {
-			return res.status(404).send(e);
+			return res.status(404).send({ error: e, message: 'Login failed' });
 		}
 	})
 );

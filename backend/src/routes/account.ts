@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { FieldPacket } from 'mysql2';
+import { Request, Response, Router } from 'express';
 import database from '../config/database';
 import verifyToken from '../middleware/verifyToken';
+import { AccountProps } from '../types/PostType';
 import { asyncWrap } from '../utils/asyncWrapper';
 
 const router = Router();
@@ -9,9 +9,9 @@ const router = Router();
 router.get(
 	'/',
 	verifyToken,
-	asyncWrap(async (req, res) => {
+	asyncWrap(async (req: Request, res: Response) => {
 		try {
-			const [rows]: [any, FieldPacket[]] = await database.query<any>(
+			const [rows] = await database.query<AccountProps[]>(
 				`SELECT id, username, registration_date  FROM users WHERE id='${req.user.id}'`
 			);
 			return res.send(rows[0]);

@@ -4,14 +4,17 @@ import dynamic from 'next/dynamic';
 
 import MainLayout from '../../../Layout/MainLayout';
 import { TitleAndDescription } from '../../write';
-import { dehydrate, QueryClient, useMutation, useQuery } from 'react-query';
+import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { Button } from 'antd';
 import { useRouter } from 'next/dist/client/router';
-import { getPost, editPost } from '../../../lib/services/PostService';
-import { GetServerSideProps } from 'next';
+import { getPost } from '../../../lib/services/PostService';
+import { GetServerSideProps, NextApiRequest } from 'next';
 import { wrapper } from '../../../lib/store';
 import { authSSR } from '../../../lib/utils/authSSR';
 import { Post } from '../../../lib/types/Post';
+import { getServerArticle } from '../../api/article/[id]';
+import usePostEditMutation from '../../../lib/query/post/usePostEditMutation';
+import { NextApiRequestWithAuthHeader } from '../../../lib/types/Axios';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
@@ -30,15 +33,19 @@ export const getServerSideProps: GetServerSideProps =
 	wrapper.getServerSideProps((store) => async (context) => {
 		const authResult = await authSSR(context, store);
 		const queryClient = new QueryClient();
-		await queryClient.prefetchQuery<Post>('postEdit', () =>
-			getPost(context.params!.id as string)
-		);
+		const customReq = {
+			query: { id: context.params?.id || '' },
+		};
+		await queryClient.prefetchQuery('postEdit', async () => {
+			const { data } = await getServerArticle(customReq);
+			return data;
+		});
 		const postData = queryClient.getQueryData<Post>('postEdit');
-		if (postData!.user_id != authResult.id) {
+		if (!authResult || postData?.user_id != authResult.id) {
 			return {
 				redirect: {
 					permanent: false,
-					destination: '/404',
+					destination: '/',
 				},
 			};
 		}
@@ -56,14 +63,10 @@ const Edit = () => {
 	const { data } = useQuery<Post>('postEdit', () => getPost(id as string));
 
 	const [post, setPost] = useState<TitleAndDescription>({
-		title: data!.title,
-		content: data!.content,
+		title: data?.title || '',
+		content: data?.content || [],
 	});
-	const editMutation = useMutation(editPost, {
-		onSuccess: () => {
-			router.push(`/article/${id as string}`);
-		},
-	});
+	const editMutation = usePostEditMutation();
 	return (
 		<MainLayout>
 			<Wrapper>

@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { verify } from 'jsonwebtoken';
 import { AccessTokenType } from '../types/TokenType';
 
-const verifyToken = (req: Request, res: Response, next: Function) => {
+const verifyToken: RequestHandler = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	if (!authHeader) {
 		return res.status(401).send('No authHeader');

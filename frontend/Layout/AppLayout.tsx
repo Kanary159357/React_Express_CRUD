@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Header from '../component/Header';
 import { Palette } from '../lib/styles/Theme';
 
 const Wrapper = styled.div`

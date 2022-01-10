@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { SignupCheckProps } from '../../../lib/types/Axios';
 import { API } from '../../../lib/utils/serverLessAPI';
 
 const signup = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { method, headers, body } = req;
 	try {
-		const { data } = await API.post(`/signup/`, body, {
-			headers,
-		});
+		const { data } = await API.post<SignupCheckProps>(`/signup/`, req.body);
 		res.status(200).send(data);
 	} catch (e) {
 		if (axios.isAxiosError(e)) {

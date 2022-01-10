@@ -5,12 +5,19 @@ import AppLayout from '../Layout/AppLayout';
 import { store, wrapper } from '../lib/store';
 import { Hydrate } from 'react-query/hydration';
 import { useState } from 'react';
-import { AppProps } from 'next/dist/shared/lib/router/router';
+import { AppProps } from 'next/app';
 import { injectStoreToInterceptor } from '../lib/utils/serverLessAPI';
 
 injectStoreToInterceptor(store);
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+interface PageProps {
+	dehydratedState: unknown;
+}
+
+interface MyAppProps extends AppProps<PageProps> {
+	pageProps: PageProps;
+}
+const MyApp = ({ Component, pageProps }: MyAppProps) => {
 	const [queryClient] = useState(() => new QueryClient());
 
 	return (

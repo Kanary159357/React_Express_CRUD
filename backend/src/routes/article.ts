@@ -2,59 +2,54 @@ import { Request, Response, Router } from 'express';
 import { asyncWrap } from '../utils/asyncWrapper';
 import database from '../config/database';
 import verifyToken from '../middleware/verifyToken';
+import { ArticleProps } from '../types/PostType';
 
 const router = Router();
 
-interface ArticleProps {
-	id: string;
-	post: any;
-	preview: string;
-	title: string;
-}
 router.get(
 	'/:id',
 	asyncWrap(async (req: Request<ArticleProps>, res: Response) => {
 		const id = req.params.id;
 		try {
-			const [row] = await database.query(
-				`SELECT * FROM POSTS WHERE ID = ${id};`
+			const [row] = await database.query<ArticleProps[]>(
+				`SELECT * FROM posts WHERE id = ${id};`
 			);
 			res.send(row[0]);
 		} catch (e) {
 			console.log(e);
-			res.status(400).send('실패데수네~');
+			res.status(400).send({ error: e, message: 'getArticle Fail' });
 		}
 	})
 );
 router.post(
 	'/:id',
 	verifyToken,
-	asyncWrap(async (req: Request, res) => {
+	asyncWrap(async (req: Request, res: Response) => {
 		const { title, content, preview_text } = req.body;
 		try {
-			const data = await database.query(
-				`UPDATE POSTS SET content = '${content}', preview_text='${preview_text}', updated_at = NOW(),  title='${title}' WHERE id ='${req.params.id}' and user_id= '${req.user.id}'`
+			await database.query(
+				`UPDATE posts SET content = '${content}', preview_text='${preview_text}',  title='${title}' WHERE id ='${req.params.id}' and user_id= '${req.user.id}'`
 			);
-			res.send(data);
+			res.send({ message: 'Update Success' });
 		} catch (e) {
 			console.log(e);
-			res.status(400).send('실패데수네~');
+			res.status(400).send({ error: e, message: 'Update Fail' });
 		}
 	})
 );
 router.delete(
 	'/:id',
 	verifyToken,
-	asyncWrap(async (req: Request<ArticleProps>, res) => {
-		const id = req.user;
+	asyncWrap(async (req: Request<ArticleProps>, res: Response) => {
+		const { id } = req.user;
 		try {
-			const data = await database.query(
-				`DELETE FROM POSTS WHERE id ='${req.params.id}' AND user_id = '${id}'`
+			await database.query(
+				`DELETE FROM posts WHERE id ='${req.params.id}' AND user_id = '${id}'`
 			);
-			res.send(data);
+			res.send({ message: 'Delete Success' });
 		} catch (e) {
 			console.log(e);
-			res.status(400).send('실패데수네~');
+			res.status(400).send({ message: 'Delete Fail', error: e });
 		}
 	})
 );

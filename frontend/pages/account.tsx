@@ -1,12 +1,13 @@
+import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import styled from 'styled-components';
 import MyPageLayout from '../Layout/MyPageLayout';
 import { wrapper } from '../lib/store';
 import { Palette } from '../lib/styles/Theme';
+import { NextApiRequestWithAuthHeader } from '../lib/types/Axios';
 import { authSSR } from '../lib/utils/authSSR';
 import { http } from '../lib/utils/serverLessAPI';
-
 import { serverGetAccount } from './api/account';
 
 const Wrapper = styled.div`
@@ -41,7 +42,7 @@ const RowContent = styled.div`
 export const getServerSideProps: GetServerSideProps =
 	wrapper.getServerSideProps((store) => async (context) => {
 		const authResult = await authSSR(context, store);
-		if (!authResult.success) {
+		if (!authResult || !authResult.success) {
 			return {
 				redirect: {
 					permanent: false,
@@ -50,8 +51,18 @@ export const getServerSideProps: GetServerSideProps =
 			};
 		}
 		const queryClient = new QueryClient();
-		console.log(context.req.headers);
-		queryClient.prefetchQuery('account', () => serverGetAccount(context.req));
+		try {
+			await queryClient.prefetchQuery('account', async () => {
+				const { data } = await serverGetAccount(
+					context.req as NextApiRequestWithAuthHeader
+				);
+				return data;
+			});
+		} catch (e) {
+			if (axios.isAxiosError(e)) {
+				console.log(e.message);
+			}
+		}
 		return {
 			props: {
 				dehydratedState: dehydrate(queryClient),

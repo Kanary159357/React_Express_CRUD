@@ -9,7 +9,11 @@ const logout = async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		res.status(200).send({ success: true });
 	} catch (e) {
-		res.status(404).send({ success: false });
+		if (axios.isAxiosError(e)) {
+			if (e.response) {
+				res.status(e.response.status).send(e.response?.statusText);
+			}
+		}
 	}
 };
 

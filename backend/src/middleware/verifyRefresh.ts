@@ -1,19 +1,13 @@
-import { Request, Response } from 'express';
-import { decode, verify } from 'jsonwebtoken';
-import { promisify } from 'util';
-import redisClient from '../config/redis';
+import { RequestHandler } from 'express';
+import { verify } from 'jsonwebtoken';
+
 import {
 	getVerifiedToken,
 	getVerifiedRefreshToken,
 	getNewAccessToken,
 } from '../utils/jwt-utils';
 
-const config = process.env;
-const verifyRefeshToken = async (
-	req: Request,
-	res: Response,
-	next: Function
-) => {
+const verifyRefeshToken: RequestHandler = async (req, res, next) => {
 	if (!req.headers.authorization || !req.headers.refresh) {
 		return res.status(401).send('No authHeader');
 	}

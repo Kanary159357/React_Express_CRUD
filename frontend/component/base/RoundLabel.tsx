@@ -1,7 +1,4 @@
-import {
-	ReactChild,
-	ReactChildren,
-} from 'hoist-non-react-statics/node_modules/@types/react';
+import { ReactChild, ReactChildren } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div<Props>`

@@ -5,10 +5,7 @@ import dynamic from 'next/dynamic';
 import MainLayout from '../Layout/MainLayout';
 import { Button } from 'antd';
 import { Descendant } from 'slate';
-
-import { useMutation } from 'react-query';
-
-import { writePost } from '../lib/services/PostService';
+import usePostAddMutation from '../lib/query/post/usePostAddMutation';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -28,26 +25,15 @@ const initialValue: Descendant[] = [
 ];
 
 export interface TitleAndDescription {
-	title: string;
-	content: Descendant[];
+	title: string | undefined;
+	content: Descendant[] | undefined;
 }
 const Write = () => {
 	const [post, setPost] = useState<TitleAndDescription>({
 		title: '',
 		content: initialValue,
 	});
-
-	const mutation = useMutation(
-		({ post }: { post: TitleAndDescription }) => writePost(post),
-		{
-			onSuccess: () => {
-				alert('success');
-			},
-			onError: () => {
-				alert('업로드 실패');
-			},
-		}
-	);
+	const mutation = usePostAddMutation();
 	return (
 		<MainLayout>
 			<Editor post={post} setPost={setPost} />

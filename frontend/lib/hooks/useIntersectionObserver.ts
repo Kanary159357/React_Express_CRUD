@@ -1,6 +1,9 @@
 import { MutableRefObject, useEffect } from 'react';
 
-function useIntersectionObserver(target: MutableRefObject<any>, fn: () => any) {
+function useIntersectionObserver(
+	target: MutableRefObject<null>,
+	fn: () => unknown
+) {
 	useEffect(() => {
 		function callback(entries: IntersectionObserverEntry[]) {
 			entries.forEach((entry) => {

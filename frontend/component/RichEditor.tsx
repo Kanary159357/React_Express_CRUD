@@ -54,7 +54,9 @@ const RichEditor = ({
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
-		setPost?.({ ...post!, title: value });
+		if (post) {
+			setPost?.({ ...post, title: value });
+		}
 	};
 	const EditorChange = (text: Descendant[]) => {
 		if (readOnly) {
@@ -83,7 +85,7 @@ const RichEditor = ({
 				<EditorDiv>
 					<Slate
 						editor={editor}
-						value={text || post!.content}
+						value={text || post!.content!}
 						onChange={EditorChange}>
 						<Editable
 							readOnly={readOnly}

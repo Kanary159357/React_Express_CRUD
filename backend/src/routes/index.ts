@@ -2,16 +2,9 @@ import { Request, Response, Router } from 'express';
 import { asyncWrap } from '../utils/asyncWrapper';
 import database from '../config/database';
 import { RowDataPacket } from 'mysql2';
+import { Post } from '../types/PostType';
 
 const router = Router();
-
-interface Post extends RowDataPacket {
-	id: string;
-	user_id: string;
-	preview_text: string;
-	title: string;
-	created_at: Date;
-}
 
 router.get(
 	'/',
@@ -59,7 +52,7 @@ router.get(
 				nextCursor,
 			});
 		} catch (e) {
-			res.send({ message: PostQuery });
+			res.status(400).send({ message: PostQuery });
 		}
 	})
 );

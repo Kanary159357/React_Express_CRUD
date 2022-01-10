@@ -3,6 +3,7 @@ import { AccessTokenType } from '../types/TokenType';
 import { asyncWrap } from '../utils/asyncWrapper';
 import { getNewAccessToken, getVerifiedRefreshToken } from '../utils/jwt-utils';
 import { decode } from 'jsonwebtoken';
+import * as cookie from 'cookie';
 import { parse } from 'cookie';
 const router = Router();
 
@@ -11,21 +12,14 @@ router.get(
 	asyncWrap(async (req: Request, res: Response) => {
 		const headers = req.headers;
 		if (!headers.cookie) {
-			return res.status(401).send('No Cookie');
+			return res.status(401).send({ message: 'No Cookie' });
 		}
-		const parsedCookie = parse(headers.cookie)['refreshToken'];
-		if (!parsedCookie) {
-			return res.status(401).send({
-				cookie: headers.cookie,
-				noparsed: parsedCookie['refreshToken'],
-			});
-		}
-		const refreshToken = parsedCookie;
+		const refreshToken = parse(headers.cookie)['refreshToken'];
+
 		if (!refreshToken) {
 			console.log('No Refresh Token');
 			return res.status(401).send({
-				cookie: headers.cookie,
-				setter: parsedCookie['refreshToken'],
+				message: 'No Refresh Token',
 			});
 		}
 
@@ -38,18 +32,20 @@ router.get(
 				decodedId
 			);
 			if (!refreshResult.ok) {
-				return res.status(405).send({ refreshToken, decodedId, refreshResult });
+				return res
+					.status(405)
+					.send({ error: refreshResult, message: 'Refresh Result fail' });
 			} else {
 				const newToken = getNewAccessToken(decodedId);
-				return res.json({
+				return res.send({
 					success: true,
 					accessToken: newToken,
 					id: decodedId,
 					username: decodedUsername,
 				});
 			}
-		} catch (err) {
-			console.log(err.message);
+		} catch (e) {
+			res.status(400).send({ error: e });
 		}
 	})
 );

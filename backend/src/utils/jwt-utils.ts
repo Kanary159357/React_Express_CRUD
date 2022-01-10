@@ -1,8 +1,9 @@
-import { JsonWebTokenError, JwtPayload, sign, verify } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { promisify } from 'util';
 import redisClient from '../config/redis';
 import { AccessTokenType } from '../types/TokenType';
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export const getNewAccessToken = (id: string) => {
 	return sign({ id }, process.env.TOKEN_SECRET, { expiresIn: '60s' });

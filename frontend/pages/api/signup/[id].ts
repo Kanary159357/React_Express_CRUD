@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { API } from '../../../lib/utils/serverLessAPI';
 
@@ -8,8 +8,9 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json(data);
 	} catch (e) {
 		if (axios.isAxiosError(e)) {
-			const { response } = e;
-			res.status(response!.status).send(response?.statusText);
+			if (e.response) {
+				res.status(e.response.status).send(e.response.statusText);
+			}
 		}
 	}
 };

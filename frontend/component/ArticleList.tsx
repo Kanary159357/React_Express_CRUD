@@ -4,10 +4,10 @@ import ArticleItem from './ArticleItem';
 
 import useIntersectionObserver from '../lib/hooks/useIntersectionObserver';
 import React, { useRef, useState } from 'react';
-import { makeGetPostsFn, queryObject } from '../lib/services/PostService';
-import { useInfiniteQuery } from 'react-query';
+import { QueryObject } from '../lib/services/PostService';
 import SkeletonBox from './Skeleton/SkeletonBox';
-import { GetPosts } from '../lib/types/Post';
+
+import usePostsListQuery from '../lib/query/post/usePostsListQuery';
 
 const Wrapper = styled.div`
 	width: 626px;
@@ -72,21 +72,16 @@ const SkeletonItem = styled.div`
 	margin-bottom: -1px;
 `;
 
-type orderProps = 'asc' | 'desc';
+export type OrderProps = 'asc' | 'desc';
 
-const ArticleList = ({ query }: { query?: queryObject }) => {
+const ArticleList = ({ query }: { query?: QueryObject }) => {
 	const scrollRef = useRef(null);
-	const [order, setOrder] = useState<orderProps>('desc');
-	const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-		useInfiniteQuery<GetPosts>(
-			['postsList', query, order],
-			makeGetPostsFn({ ...query!, order }),
-			{
-				getNextPageParam: (lastPage) => lastPage.nextCursor,
-			}
-		);
+	const [order, setOrder] = useState<OrderProps>('desc');
+	const { data, isError, hasNextPage, isFetchingNextPage, fetchNextPage } =
+		usePostsListQuery(query, order);
+
 	const onOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setOrder(e.target.value as orderProps);
+		setOrder(e.target.value as OrderProps);
 	};
 	useIntersectionObserver(scrollRef, () => hasNextPage && fetchNextPage());
 	return (
@@ -98,7 +93,7 @@ const ArticleList = ({ query }: { query?: queryObject }) => {
 				</CustomSelect>
 			</ListControlBox>
 			<ContentBox>
-				{!data ? (
+				{!data || isError ? (
 					new Array(4).fill(1).map((_, i) => (
 						<SkeletonItem key={i}>
 							<SkeletonBox height={'20px'} width={'300px'} />

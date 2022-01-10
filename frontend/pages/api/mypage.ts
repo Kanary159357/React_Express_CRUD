@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { PostPreview } from '../../lib/types/Post';
 import { API } from '../../lib/utils/serverLessAPI';
 
 const mypage = async (req: NextApiRequest, res: NextApiResponse) => {

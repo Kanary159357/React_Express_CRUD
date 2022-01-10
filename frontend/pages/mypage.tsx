@@ -14,8 +14,7 @@ const Wrapper = styled.div`
 export const getServerSideProps: GetServerSideProps =
 	wrapper.getServerSideProps((store) => async (context) => {
 		const authResult = await authSSR(context, store);
-		console.log(authResult);
-		if (!authResult.success) {
+		if (!authResult || !authResult.success) {
 			return {
 				redirect: {
 					permanent: false,
@@ -35,7 +34,7 @@ const MyPage = () => {
 	return (
 		<MyPageLayout>
 			<Wrapper>
-				<ArticleList query={{ user_id: user_id! }} />
+				<ArticleList query={{ user_id: user_id as string }} />
 			</Wrapper>
 		</MyPageLayout>
 	);
