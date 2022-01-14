@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../lib/store';
 import RoundLabel from './base/RoundLabel';
 import { useEffect, useState } from 'react';
-import { useLogoutMutation } from '../lib/services/UserService';
+import useLogoutMutation from '../lib/query/users/useLogoutMutation';
 const Wrapper = styled.div<{ checkTop: boolean }>`
 	height: 70px;
 	position: sticky;

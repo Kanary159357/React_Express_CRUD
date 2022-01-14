@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import { Palette } from '../lib/styles/Theme';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { AxiosError } from 'axios';
-import { useRouter } from 'next/dist/client/router';
 import { useDebounce } from '../lib/hooks/useDebounce';
 import { idValidation, passwordValidation } from '../lib/utils/validation';
-import { InputProps, signup, signupCheckId } from '../lib/services/UserService';
+import { InputProps } from '../lib/services/UserService';
 import StyledInput from '../component/base/StyledInput';
 import RoundLabel from '../component/base/RoundLabel';
+import useSignupMutation from '../lib/query/users/useSignupMutation';
+import useIdCheckQuery from '../lib/query/users/useIdCheckQuery';
 const Wrapper = styled.div`
 	height: calc(100vh - 70px);
 	width: 100%;
@@ -51,21 +50,10 @@ const Signup = () => {
 		username: '',
 	});
 	const [passwordValid, setPasswordValid] = useState('');
-	const router = useRouter();
 	const { id, password, username } = inputs;
 	const { dValue: debouncedId, debounceLoading } = useDebounce<string>(id, 500);
-	const { data: idCheckdata } = useQuery<boolean>(
-		['idCheck', debouncedId],
-		() => signupCheckId(debouncedId),
-		{ enabled: debouncedId.length > 2 }
-	);
-	const signupMutation = useMutation((content: InputProps) => signup(content), {
-		onSuccess: () => router.push('/login'),
-		onError: (error: AxiosError) => {
-			console.log(error);
-			alert(error);
-		},
-	});
+	const { data: idCheckdata } = useIdCheckQuery(debouncedId);
+	const signupMutation = useSignupMutation();
 
 	const onSubmit = () => {
 		if (passwordValidation(password, passwordValid) && idValidation(id)) {

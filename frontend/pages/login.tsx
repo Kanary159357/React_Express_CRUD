@@ -1,16 +1,11 @@
-import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
 import { useRef } from 'react';
 import { Palette } from '../lib/styles/Theme';
 import Link from 'next/link';
-import { useDispatch } from 'react-redux';
-import { loginProcess } from '../lib/store/authSlice';
-import { http } from '../lib/utils/serverLessAPI';
-import { login } from '../lib/services/UserService';
-import { useMutation } from 'react-query';
 import RoundLabel from '../component/base/RoundLabel';
 import StyledForm from '../component/base/StyledForm';
 import StyledInput from '../component/base/StyledInput';
+import useLoginMutation from '../lib/query/users/useLoginMutation';
 const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
@@ -44,8 +39,6 @@ const Button = styled.div`
 `;
 
 const Login = () => {
-	const router = useRouter();
-	const dispatch = useDispatch();
 	const inputRef = useRef<{
 		id: HTMLInputElement | null;
 		password: HTMLInputElement | null;
@@ -53,36 +46,7 @@ const Login = () => {
 		id: null,
 		password: null,
 	});
-	const loginMutation = useMutation(
-		({ id, password }: { id: string; password: string }) =>
-			login({ id, password }),
-		{
-			onSuccess: (variables) => {
-				const { username, success, id, token: accessToken } = variables;
-				if (success) {
-					const bearer = `Bearer ${accessToken as string}`;
-					if (http.defaults.headers) {
-						http.defaults.headers.Authorization = bearer;
-					} else {
-						console.error('No http default header');
-					}
-					dispatch(
-						loginProcess({
-							userData: { id, username },
-							accessToken,
-							isLogin: true,
-						})
-					);
-					void router.push('/');
-				} else {
-					alert('그런 계정은 없답니다~');
-				}
-			},
-			onError: () => {
-				alert('에러가 발생했습니다');
-			},
-		}
-	);
+	const loginMutation = useLoginMutation();
 	const onFinish = () => {
 		if (inputRef.current['id'] && inputRef.current['password']) {
 			const id = inputRef.current['id'].value;

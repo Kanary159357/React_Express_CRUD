@@ -39,7 +39,7 @@ export const authSlice = createSlice({
 		[HYDRATE]: (state, action: PayloadAction<{ authReducer: AuthState }>) => {
 			const temp = {
 				...state,
-				authReducer: action.payload.authReducer,
+				...action.payload.authReducer,
 			};
 			return temp;
 		},

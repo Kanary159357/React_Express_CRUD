@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { GetServerSidePropsContext } from 'next';
+import {
+	GetServerSidePropsContext,
+	GetStaticPathsContext,
+	GetStaticPropsContext,
+} from 'next';
 import { Store } from 'redux';
 import { loginProcess } from '../store/authSlice';
 import { RefreshTokenProps } from '../types/Axios';

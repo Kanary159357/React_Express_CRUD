@@ -7,8 +7,8 @@ const usePostEditMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation(editPost, {
 		onSuccess: async () => {
-			await queryClient.refetchQueries('postsList', { exact: true });
-			void router.push(`/`);
+			await queryClient.refetchQueries('postsList');
+			router.push(`/`);
 		},
 		onError: (e) => {
 			console.log(e);

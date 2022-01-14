@@ -3,16 +3,16 @@ import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
 import MainLayout from '../../../Layout/MainLayout';
 import Link from 'next/link';
-import { dehydrate, QueryClient, useQuery } from 'react-query';
+import { dehydrate, QueryClient } from 'react-query';
 import dynamic from 'next/dynamic';
 import { useSelector } from 'react-redux';
 import { AppState, wrapper } from '../../../lib/store';
 import { GetServerSidePropsContext } from 'next';
-import { getPost } from '../../../lib/services/PostService';
-import { Post } from '../../../lib/types/Post';
 import { getServerArticle } from '../../api/article/[id]';
 import usePostDeleteMutation from '../../../lib/query/post/usePostDeleteMutation';
 import SkeletonPost from '../../../component/Skeleton/SkeletonPost';
+import usePostQuery from '../../../lib/query/post/usePostQuery';
+import { authSSR } from '../../../lib/utils/authSSR';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -28,7 +28,8 @@ const Editor = dynamic(() => import('../../../component/RichEditor'), {
 	},
 });
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (context: GetServerSidePropsContext) => {
+	(store) => async (context: GetServerSidePropsContext) => {
+		await authSSR(context, store);
 		const { params } = context;
 		const queryClient = new QueryClient();
 		const customReq = { query: { id: params?.id || '' } };
@@ -49,7 +50,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 const Article = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	const { data } = useQuery<Post>('post', () => getPost(id as string));
+	const { data } = usePostQuery(id as string);
 	const userData = useSelector((state: AppState) => state.authReducer.userData);
 	const user_id = userData ? userData.id : null;
 	const deleteMutation = usePostDeleteMutation();

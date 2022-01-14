@@ -14,6 +14,7 @@ import { authSSR } from '../../../lib/utils/authSSR';
 import { Post } from '../../../lib/types/Post';
 import { getServerArticle } from '../../api/article/[id]';
 import usePostEditMutation from '../../../lib/query/post/usePostEditMutation';
+import usePostQuery from '../../../lib/query/post/usePostQuery';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
@@ -59,7 +60,7 @@ const Edit = () => {
 	const router = useRouter();
 	const { id } = router.query;
 
-	const { data } = useQuery<Post>('postEdit', () => getPost(id as string));
+	const { data } = usePostQuery(id as string);
 
 	const [post, setPost] = useState<TitleAndDescription>({
 		title: data?.title || '',

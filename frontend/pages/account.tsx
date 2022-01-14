@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
-import { dehydrate, QueryClient, useQuery } from 'react-query';
+import { dehydrate, QueryClient } from 'react-query';
 import styled from 'styled-components';
 import MyPageLayout from '../Layout/MyPageLayout';
+import useAccountQuery from '../lib/query/users/useAccountQuery';
 import { wrapper } from '../lib/store';
 import { Palette } from '../lib/styles/Theme';
 import { NextApiRequestWithAuthHeader } from '../lib/types/Axios';
 import { authSSR } from '../lib/utils/authSSR';
-import { http } from '../lib/utils/serverLessAPI';
 import { serverGetAccount } from './api/account';
 
 const Wrapper = styled.div`
@@ -75,17 +75,9 @@ export interface AccountProps {
 	username: string;
 	registration_date: Date;
 }
-const getAccountInfo = async () => {
-	try {
-		const resp = await http.get<AccountProps>('/api/account');
-		return resp.data;
-	} catch (e) {
-		console.error(e);
-	}
-};
 
 const Account = () => {
-	const { data } = useQuery('account', getAccountInfo);
+	const { data } = useAccountQuery();
 	return (
 		<MyPageLayout>
 			<Wrapper>
