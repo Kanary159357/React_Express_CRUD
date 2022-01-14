@@ -33,7 +33,7 @@ router.get(
 			);
 			if (!refreshResult.ok) {
 				return res
-					.status(405)
+					.status(400)
 					.send({ error: refreshResult, message: 'Refresh Result fail' });
 			} else {
 				const newToken = getNewAccessToken(decodedId);

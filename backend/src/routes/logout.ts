@@ -15,7 +15,7 @@ router.delete(
 			await delAsync(req.user.id);
 			return res.send({ message: 'Logout Success' });
 		} catch (e) {
-			return res.status(404).send({ message: 'Logout Failed' });
+			return res.status(400).send({ message: 'Logout Failed' });
 		}
 	})
 );

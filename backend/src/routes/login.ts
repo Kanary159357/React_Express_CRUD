@@ -36,7 +36,7 @@ router.get(
 				});
 			}
 		} catch {
-			res.status(404).send({ success: false, message: 'getUser failed' });
+			res.status(400).send({ success: false, message: 'getUser failed' });
 		}
 	})
 );
@@ -86,7 +86,7 @@ router.post(
 				});
 			}
 		} catch (e) {
-			return res.status(404).send({ error: e, message: 'Login failed' });
+			return res.status(400).send({ error: e, message: 'Login failed' });
 		}
 	})
 );

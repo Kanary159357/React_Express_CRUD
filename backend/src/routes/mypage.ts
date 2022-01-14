@@ -24,7 +24,7 @@ router.get(
 			);
 			return res.send(rows);
 		} catch (e) {
-			return res.status(401).send({ error: e, message: 'getMyPage fail' });
+			return res.status(400).send({ error: e, message: 'getMyPage fail' });
 		}
 	})
 );

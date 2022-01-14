@@ -16,7 +16,7 @@ router.get(
 			);
 			return res.send(rows[0]);
 		} catch (e) {
-			return res.status(401).send('Error');
+			return res.status(400).send('Error');
 		}
 	})
 );
