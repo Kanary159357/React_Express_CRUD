@@ -19,21 +19,23 @@ interface CountProps extends RowDataPacket {
 
 router.post(
 	'/',
-	asyncWrap(async (req: Request<InputProps>, res: Response) => {
-		const date = new Date();
-		const { id, password, username } = req.body;
-		date.setHours(date.getHours() + 9);
-		const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
-		const encryptPassword = await hash(password, 1);
-		try {
-			await database.query(
-				`INSERT INTO users values ('${id}', '${encryptPassword}', '${username}', '${formattedDate}');`
-			);
-			res.send({ message: 'Successfully registered' });
-		} catch (e) {
-			res.status(400).send({ message: 'Registeration Fail', error: e });
+	asyncWrap(
+		async (req: Request<unknown, unknown, InputProps>, res: Response) => {
+			const date = new Date();
+			const { id, password, username } = req.body;
+			date.setHours(date.getHours() + 9);
+			const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
+			const encryptPassword = await hash(password, 1);
+			try {
+				await database.query(
+					`INSERT INTO users values ('${id}', '${encryptPassword}', '${username}', '${formattedDate}');`
+				);
+				res.send({ message: 'Successfully registered' });
+			} catch (e) {
+				res.status(400).send({ message: 'Registeration Fail', error: e });
+			}
 		}
-	})
+	)
 );
 router.get(
 	'/:id',

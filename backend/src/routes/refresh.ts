@@ -3,7 +3,6 @@ import { AccessTokenType } from '../types/TokenType';
 import { asyncWrap } from '../utils/asyncWrapper';
 import { getNewAccessToken, getVerifiedRefreshToken } from '../utils/jwt-utils';
 import { decode } from 'jsonwebtoken';
-import * as cookie from 'cookie';
 import { parse } from 'cookie';
 const router = Router();
 

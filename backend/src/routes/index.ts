@@ -1,7 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { asyncWrap } from '../utils/asyncWrapper';
 import database from '../config/database';
-import { RowDataPacket } from 'mysql2';
 import { Post } from '../types/PostType';
 
 const router = Router();
