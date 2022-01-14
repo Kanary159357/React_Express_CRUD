@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-
 import MainLayout from '../../../Layout/MainLayout';
 import { TitleAndDescription } from '../../write';
-import { dehydrate, QueryClient, useQuery } from 'react-query';
-import { Button } from 'antd';
+import { dehydrate, QueryClient } from 'react-query';
 import { useRouter } from 'next/dist/client/router';
-import { getPost } from '../../../lib/services/PostService';
 import { GetServerSideProps } from 'next';
 import { wrapper } from '../../../lib/store';
 import { authSSR } from '../../../lib/utils/authSSR';
@@ -15,6 +12,8 @@ import { Post } from '../../../lib/types/Post';
 import { getServerArticle } from '../../api/article/[id]';
 import usePostEditMutation from '../../../lib/query/post/usePostEditMutation';
 import usePostQuery from '../../../lib/query/post/usePostQuery';
+import RoundLabel from '../../../component/base/RoundLabel';
+import { Palette } from '../../../lib/styles/Theme';
 const Wrapper = styled.div`
 	min-height: 800px;
 `;
@@ -72,9 +71,13 @@ const Edit = () => {
 			<Wrapper>
 				{data && <Editor post={post} setPost={setPost} readOnly={false} />}
 				<ControlDiv>
-					<Button onClick={() => editMutation.mutate({ id, post })}>
+					<RoundLabel
+						onClick={() => editMutation.mutate({ id, post })}
+						background={Palette.orange_1}
+						fontColor={Palette.white}
+						width='100px'>
 						작성
-					</Button>
+					</RoundLabel>
 				</ControlDiv>
 			</Wrapper>
 		</MainLayout>

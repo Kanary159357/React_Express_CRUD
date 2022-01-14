@@ -8,6 +8,7 @@ import { wrapper } from '../lib/store';
 import { Palette } from '../lib/styles/Theme';
 import { NextApiRequestWithAuthHeader } from '../lib/types/Axios';
 import { authSSR } from '../lib/utils/authSSR';
+import extractDate from '../lib/utils/extractDate';
 import { serverGetAccount } from './api/account';
 
 const Wrapper = styled.div`
@@ -93,7 +94,9 @@ const Account = () => {
 						</Row>
 						<Row>
 							<RowTitle>가입일자</RowTitle>
-							<RowContent>{data.registration_date}</RowContent>
+							<RowContent>
+								{extractDate(new Date(data.registration_date)).fullDate}
+							</RowContent>
 						</Row>
 					</>
 				)}

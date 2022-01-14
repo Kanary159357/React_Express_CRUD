@@ -3,9 +3,10 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import MainLayout from '../Layout/MainLayout';
-import { Button } from 'antd';
 import { Descendant } from 'slate';
 import usePostAddMutation from '../lib/query/post/usePostAddMutation';
+import RoundLabel from '../component/base/RoundLabel';
+import { Palette } from '../lib/styles/Theme';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -13,6 +14,7 @@ const ControlDiv = styled.div`
 	margin: 30px;
 	margin-top: -30px;
 `;
+
 const Editor = dynamic(() => import('../component/RichEditor'), {
 	ssr: false,
 });
@@ -38,12 +40,15 @@ const Write = () => {
 		<MainLayout>
 			<Editor post={post} setPost={setPost} readOnly={false} />
 			<ControlDiv>
-				<Button
+				<RoundLabel
 					onClick={() => {
 						mutation.mutate({ post });
-					}}>
+					}}
+					background={Palette.orange_1}
+					fontColor={Palette.white}
+					width='100px'>
 					작성
-				</Button>
+				</RoundLabel>
 			</ControlDiv>
 		</MainLayout>
 	);

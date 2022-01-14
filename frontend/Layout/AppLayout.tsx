@@ -3,7 +3,7 @@ import { Palette } from '../lib/styles/Theme';
 
 const Wrapper = styled.div`
 	background: ${Palette.gray_0};
-	min-height: calc(100%);
+	min-height: 100vh;
 `;
 
 const AppLayout: React.FC = ({ children }) => {

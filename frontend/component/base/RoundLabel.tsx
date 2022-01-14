@@ -29,7 +29,7 @@ type Props = Partial<RoundLabelProps>;
 const RoundLabel = (props: Props) => {
 	const { onClick } = props;
 	return (
-		<Wrapper {...props} onClick={() => onClick}>
+		<Wrapper {...props} onClick={onClick}>
 			{props.children}
 		</Wrapper>
 	);

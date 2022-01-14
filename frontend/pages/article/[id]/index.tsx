@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
 import MainLayout from '../../../Layout/MainLayout';
@@ -13,6 +12,8 @@ import usePostDeleteMutation from '../../../lib/query/post/usePostDeleteMutation
 import SkeletonPost from '../../../component/Skeleton/SkeletonPost';
 import usePostQuery from '../../../lib/query/post/usePostQuery';
 import { authSSR } from '../../../lib/utils/authSSR';
+import RoundLabel from '../../../component/base/RoundLabel';
+import { Palette } from '../../../lib/styles/Theme';
 
 const ControlDiv = styled.div`
 	display: flex;
@@ -72,14 +73,24 @@ const Article = () => {
 					}
 					{user_id == data.user_id && (
 						<ControlDiv>
-							<Button>
-								<Link href={`/article/${id as string}/edit`}>
-									<a>수정</a>
-								</Link>
-							</Button>
-							<Button onClick={() => deleteMutation.mutate(id as string)}>
+							<Link href={`/article/${id as string}/edit`}>
+								<a>
+									<RoundLabel
+										background={Palette.orange_1}
+										fontColor={Palette.white}
+										width='100px'>
+										수정
+									</RoundLabel>
+								</a>
+							</Link>
+
+							<RoundLabel
+								onClick={() => deleteMutation.mutate(id as string)}
+								background={Palette.gray_3}
+								fontColor={Palette.white}
+								width='100px'>
 								삭제
-							</Button>
+							</RoundLabel>
 						</ControlDiv>
 					)}
 				</MainLayout>

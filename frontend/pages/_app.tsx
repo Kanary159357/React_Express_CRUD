@@ -1,4 +1,3 @@
-import 'antd/dist/antd.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import GlobalStyle from '../lib/styles/GlobalStyle';
 import AppLayout from '../Layout/AppLayout';

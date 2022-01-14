@@ -7,6 +7,7 @@ export const Palette = {
 	gray_3: '#858585',
 	gray_4: '#626262',
 	orange_1: '#F4AF87',
+	orange_2: '#ffa585',
 	red_0: '#FF948D',
 	pink_0: '#FFCFCF',
 };

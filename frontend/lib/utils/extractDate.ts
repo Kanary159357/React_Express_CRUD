@@ -8,8 +8,8 @@ const extractDate = (date: Date) => {
 	};
 	return {
 		...data,
-		fullDate: `${data.year}년 ${data.month}월 ${data.date}일`,
-		fullTime: `${data.hour}시 ${data.month}분`,
+		fullDate: `${data.year}년 ${data.month + 1}월 ${data.date}일`,
+		fullTime: `${data.hour}시 ${data.min}분`,
 	};
 };
 
