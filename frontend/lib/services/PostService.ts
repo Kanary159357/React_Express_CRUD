@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { AxiosResponse } from 'axios';
 import { TitleAndDescription } from '../../pages/write';
 import { GetPosts, Post } from '../types/Post';
@@ -54,7 +53,7 @@ export const editPost = ({
 	id: string | string[] | undefined;
 	post: TitleAndDescription;
 }) => {
-	return http.post(`/api/article/${id as string}`, {
+	return http.put(`/api/article/${id as string}`, {
 		preview_text: serialize(post?.content || []).substring(0, 200),
 		title: post.title,
 		content: JSON.stringify(post.content),

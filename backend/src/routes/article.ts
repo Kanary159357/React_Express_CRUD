@@ -26,7 +26,7 @@ router.get(
 		}
 	)
 );
-router.post(
+router.put(
 	'/:id',
 	verifyToken,
 	asyncWrap(async (req: Request<{ id: string }>, res: Response) => {

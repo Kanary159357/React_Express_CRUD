@@ -23,9 +23,9 @@ const article = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	}
-	if (method === 'POST') {
+	if (method === 'PUT') {
 		try {
-			const { data } = await API.post<baseAPIResponse>(
+			const { data } = await API.put<baseAPIResponse>(
 				`/article/${id as string}`,
 				req.body,
 				{
